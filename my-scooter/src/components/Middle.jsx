@@ -11,7 +11,10 @@ function Status({ status }) {
   );
 }
 
-function Scooter({ scooter }) {
+function Scooter({ scooter, onDelete }) {
+  const handleDelete = () => {
+    onDelete(scooter.id);
+  };
   return (
     <div
       key={scooter.id}
@@ -42,8 +45,11 @@ function Scooter({ scooter }) {
       </div>
 
       <div className="flex gap-4 text-xl h-full items-center">
-        <FaPencil className="text-blue-700 hover:text-blue-900 cursor-pointer" />
-        <FaTrashAlt className="text-red-700 hover:text-red-900 cursor-pointer" />
+        <FaPencil className="text-darkgray-700 hover:text-darkgray-900 cursor-pointer" />
+        <FaTrashAlt
+          className="text-red-700 hover:text-red-900 cursor-pointer"
+          onClick={handleDelete}
+        />
       </div>
       <div></div>
     </div>
@@ -51,7 +57,7 @@ function Scooter({ scooter }) {
 }
 
 export default function Middle() {
-  const [scooter, setScooter] = useState(getAllScooters);
+  const [scooter, setScooter] = useState([]);
   useEffect(() => {
     // fetch("/paspirtukai.json")
     // 	.then((resp) => resp.json())
@@ -59,6 +65,7 @@ export default function Middle() {
     // 		console.log(data);
     // 		setScooter(data);
     // 	});
+    setScooter(getAllScooters());
   }, []);
 
   function getAllScooters() {
@@ -67,10 +74,16 @@ export default function Middle() {
     return data;
   }
 
+  const handleDeleteScooter = (id) => {
+    const updatedScooters = scooter.filter((scooteris) => scooteris.id !== id);
+    setScooter(updatedScooters);
+    localStorage.setItem("scooters", JSON.stringify(updatedScooters));
+  };
+
   return (
-    <div className="container mx-auto bg-slate-100 min-h-[400px] flex flex-col gap-4 p-4">
+    <div className="container mx-auto bg-violet-100 min-h-[400px] flex flex-col gap-4 p-4">
       {scooter.map((s) => (
-        <Scooter key={s.id} scooter={s} />
+        <Scooter key={s.id} scooter={s} onDelete={handleDeleteScooter} />
       ))}
     </div>
   );

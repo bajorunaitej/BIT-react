@@ -69,7 +69,7 @@ export default function AddScooterForm() {
         placeholder="Kaina/val"
       />
       <div className="min-w-[200px]">
-        <Button onClick={saveNewScooter} text="Pridėti" color="blue" />
+        <Button onClick={saveNewScooter} text="Pridėti" color="black" />
       </div>
     </div>
   );
