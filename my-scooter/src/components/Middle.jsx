@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import * as PropTypes from "prop-types";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 
@@ -11,9 +10,6 @@ function Status({ status }) {
     ></div>
   );
 }
-Status.propTypes = {
-  status: PropTypes.bool.isRequired,
-};
 
 // eslint-disable-next-line react/prop-types
 function Scooter({ scooter, onDelete }) {
@@ -64,9 +60,6 @@ function Scooter({ scooter, onDelete }) {
     </div>
   );
 }
-Scooter.propTypes = {
-  scooter: PropTypes.object,
-};
 
 //Kai pasikeičia scooter'io reikšmė/ atsiranda nauja reikšmė - iškviečiamas useEffect
 export default function Middle({ newScooter }) {
@@ -118,7 +111,3 @@ export default function Middle({ newScooter }) {
     </div>
   );
 }
-
-Middle.propTypes = {
-  newScooter: PropTypes.object,
-};
