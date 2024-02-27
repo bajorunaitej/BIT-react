@@ -1,13 +1,13 @@
 import AddScooterForm from "./AddScooter";
 import Button from "./Button";
 
-export default function Top() {
+export default function Top({ notifyScooterAddition }) {
   return (
     <div className="container mx-auto bg-pink-50 min-h-[400px] p-4">
       <h2 className="text-center my-20 text-xl font-bold">
         Paspirtuko pridėjimas
       </h2>
-      <AddScooterForm />
+      <AddScooterForm notifyScooterAddition={notifyScooterAddition} />
       <div className="flex justify-center mt-28 gap-4">
         <Button text="Rodyti laisvus" color="green" />
         <Button color="red" text="Rodyti užimtus" />

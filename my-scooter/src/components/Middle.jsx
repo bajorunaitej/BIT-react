@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as PropTypes from "prop-types";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 
@@ -6,11 +7,15 @@ function Status({ status }) {
   return (
     <div
       className="w-[20px] h-[20px] rounded-full inline-block"
-      style={{ background: status ? "lime" : "red" }}
+      style={{ background: status ? "red" : "lime" }}
     ></div>
   );
 }
+Status.propTypes = {
+  status: PropTypes.bool.isRequired,
+};
 
+// eslint-disable-next-line react/prop-types
 function Scooter({ scooter, onDelete }) {
   const handleDelete = () => {
     onDelete(scooter.id);
@@ -34,13 +39,17 @@ function Scooter({ scooter, onDelete }) {
       </div>
       <div>
         <h3 className="font-bold">Paskutinio naudojimo data</h3>
-        <div>{new Date(scooter.lastUseTime).toLocaleDateString("lt")}</div>
+        <div>
+          {scooter.localStorage === 1
+            ? "niekada nepanaudotas"
+            : new Date(scooter.lastUseTime).toLocaleDateString("lt")}
+        </div>
       </div>
       <div>
         <h3 className="font-bold">Statusas</h3>
         <div>
           <Status status={scooter.isBusy} />{" "}
-          {scooter.isBusy ? "(Laisvas)" : "(Užimtas)"}
+          {scooter.isBusy ? "(Užimtas)" : "(Laisvas)"}
         </div>
       </div>
 
@@ -55,18 +64,39 @@ function Scooter({ scooter, onDelete }) {
     </div>
   );
 }
+Scooter.propTypes = {
+  scooter: PropTypes.object,
+};
 
-export default function Middle() {
-  const [scooter, setScooter] = useState([]);
+//Kai pasikeičia scooter'io reikšmė/ atsiranda nauja reikšmė - iškviečiamas useEffect
+export default function Middle({ newScooter }) {
+  const [scooter, setScooter] = useState(getAllScooters);
+
   useEffect(() => {
-    // fetch("/paspirtukai.json")
-    // 	.then((resp) => resp.json())
-    // 	.then((data) => {
-    // 		console.log(data);
-    // 		setScooter(data);
-    // 	});
-    setScooter(getAllScooters());
-  }, []);
+    console.log("Komponentas užsimontavo arba pasikeitė newScooter reikšmė");
+    if (newScooter === null) return;
+    if (newScooter) {
+      const newId = +localStorage.getItem("currentId");
+      if (!newId) {
+        localStorage.setItem("currentId", "1");
+      }
+      const newScooterAddition = {
+        ...newScooter,
+        id: newId || 1,
+        lastUseTime: 1,
+        isBusy: false,
+      };
+      setScooter([...scooter, newScooterAddition]);
+      const nextId = newId + 1 === 1 ? 2 : nextId + 1;
+      localStorage.setItem("currentId", nextId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newScooter]);
+
+  useEffect(() => {
+    localStorage.setItem("scooters", JSON.stringify(scooter));
+  }, [scooter]);
 
   function getAllScooters() {
     const data = JSON.parse(localStorage.getItem("scooters")) || [];
@@ -88,3 +118,7 @@ export default function Middle() {
     </div>
   );
 }
+
+Middle.propTypes = {
+  newScooter: PropTypes.object,
+};
