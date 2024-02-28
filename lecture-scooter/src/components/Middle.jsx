@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import * as PropTypes from "prop-types";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 
@@ -106,6 +105,31 @@ export default function Middle({ newScooter }) {
 
   return (
     <div className="container mx-auto bg-slate-100 min-h-[400px] flex flex-col gap-4 p-4">
+      <div className="flex justify-center mt-28 gap-4">
+        {/* <Buttton text={getButtonText()}
+          color={getColor()}
+          onClick={() => {
+            setShowFreeScooters((prevValue) => {
+              return prevValue ? false : prevValue === false ?  null : true;
+            });
+          }}
+        /> */}
+
+        <select
+          onChange={(e) => {
+            if (e.target.value === "null") setShowFreeScooters(null);
+            else if (e.target.value === "true") {
+              setShowFreeScooters(true);
+            } else {
+              setShowFreeScooters(false);
+            }
+          }}
+        >
+          <option value="null">Rodyti visus</option>
+          <option value="true">Rodyti laisvus</option>
+          <option value="false">Rodyti užimtus</option>
+        </select>
+      </div>
       {filteredScooters.map((s) => (
         <Scooter key={s.id} scooter={s} />
       ))}
