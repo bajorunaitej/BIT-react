@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 
@@ -64,6 +64,7 @@ function Scooter({ scooter, onDelete }) {
 //Kai pasikeičia scooter'io reikšmė/ atsiranda nauja reikšmė - iškviečiamas useEffect
 export default function Middle({ newScooter }) {
   const [scooter, setScooter] = useState(getAllScooters);
+  const [showFreeScooters, setShowFreeScooters] = useState(null);
 
   useEffect(() => {
     console.log("Komponentas užsimontavo arba pasikeitė newScooter reikšmė");
@@ -97,6 +98,37 @@ export default function Middle({ newScooter }) {
     return data;
   }
 
+  const filteredScooters = useMemo(
+    () =>
+      scooter.filter((val) => {
+        console.log("Filtruoju");
+        if (showFreeScooters === null) {
+          return true;
+        } else if (showFreeScooters) {
+          return !val.isBusy;
+        } else {
+          return val.isBusy;
+        }
+      }),
+    [showFreeScooters, scooter]
+  );
+
+  // laisvi => uzimti => visi =>laisvi...
+  // function getColor() {
+  // 	return showFreeScooters
+  // 		? "red"
+  // 		: showFreeScooters === false
+  // 		? "blue"
+  // 		: "green";
+  // }
+  // function getButtonText() {
+  // 	return showFreeScooters
+  // 		? "Rodyti užimtus"
+  // 		: showFreeScooters === false
+  // 		? "Rodyti visus"
+  // 		: "Rodyti laisvus";
+  // }
+
   const handleDeleteScooter = (id) => {
     const updatedScooters = scooter.filter((scooteris) => scooteris.id !== id);
     setScooter(updatedScooters);
@@ -105,7 +137,32 @@ export default function Middle({ newScooter }) {
 
   return (
     <div className="container mx-auto bg-violet-100 min-h-[400px] flex flex-col gap-4 p-4">
-      {scooter.map((s) => (
+      <div className="flex justify-center mt-28 gap-4">
+        {/* <Button
+					text={getButtonText()}
+					color={getColor()}
+					onClick={() => {
+						setShowFreeScooters((prevValue) => {
+							return prevValue ? false : prevValue === false ? null : true;
+						});
+					}}
+				/> */}
+        <select
+          onChange={(e) => {
+            if (e.target.value === "null") setShowFreeScooters(null);
+            else if (e.target.value === "true") {
+              setShowFreeScooters(true);
+            } else {
+              setShowFreeScooters(false);
+            }
+          }}
+        >
+          <option value="null">Rodyti visus</option>
+          <option value="true">Rodyti laisvus</option>
+          <option value="false">Rodyti užimtus</option>
+        </select>
+      </div>
+      {filteredScooters.map((s) => (
         <Scooter key={s.id} scooter={s} onDelete={handleDeleteScooter} />
       ))}
     </div>
