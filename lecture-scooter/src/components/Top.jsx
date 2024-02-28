@@ -13,6 +13,7 @@ export default function Top({ notifyScooterAddition }) {
         {/* Komponentai nepriima onClicko!! */}
         <Button text="Rodyti laisvus" color="green" hoverColor="blue" />
         <Button color="red" text="Rodyti užimtus" />
+        <Button color="darkviolet" text="Rodyti visus" />
       </div>
     </div>
   );

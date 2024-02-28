@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as PropTypes from "prop-types";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
@@ -11,9 +11,6 @@ function Status({ status }) {
     ></div>
   );
 }
-Status.propTypes = {
-  status: PropTypes.bool.isRequired,
-};
 
 function Scooter({ scooter }) {
   return (
@@ -37,7 +34,7 @@ function Scooter({ scooter }) {
         <h3 className="font-bold">Paskutinio naudojimo data</h3>
         <div>
           {scooter.lastUseTime === 1
-            ? "niekada nepanaudotas"
+            ? "Niekada nepanaudotas"
             : new Date(scooter.lastUseTime).toLocaleDateString("lt")}
         </div>
       </div>
@@ -58,23 +55,18 @@ function Scooter({ scooter }) {
   );
 }
 
-Scooter.propTypes = {
-  scooter: PropTypes.object,
-};
-
-//kai pasikeičia scooterio reikšmė, atsiranda naujas scooter'is, iškviečiamas useEffect
 export default function Middle({ newScooter }) {
   const [scooter, setScooter] = useState(getAllScooters);
+  const [showFreeScooters, setShowFreeScooters] = useState(null);
 
   useEffect(() => {
-    console.log("komponentas užsimont arba pasikeite newScooter reikšmė");
+    console.log("Komponentas uzsimontavo arba pasikeite newScooter reiksme");
     if (newScooter === null) return;
     if (newScooter) {
-      // console.log("Naujas scooter'is buvo pridėtas" + "naujas Scooteris: ");
+      // console.log("Naujas scooteris buvo pridetas" + " Naujas scooteris: ");
       const newId = +localStorage.getItem("currentId");
-      if (!newId) {
-        localStorage.setItem("currentId", "1");
-      }
+      if (!newId) localStorage.setItem("currentId", "1");
+
       const newScooterAddition = {
         ...newScooter,
         id: newId || 1,
@@ -82,8 +74,8 @@ export default function Middle({ newScooter }) {
         isBusy: false,
       };
       setScooter([...scooter, newScooterAddition]);
-      const nextId = newId + 1 === 1 ? 2 : nextId + 1;
-      localStorage.setItem("curremtId", nextId);
+      const nextId = newId + 1 === 1 ? 2 : newId + 1;
+      localStorage.setItem("currentId", nextId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newScooter]);
@@ -98,15 +90,25 @@ export default function Middle({ newScooter }) {
     return data;
   }
 
+  const filteredScooters = useMemo(
+    () =>
+      scooter.filter((val) => {
+        if (showFreeScooters === null) {
+          return true;
+        } else if (showFreeScooters) {
+          return !val.isBusy;
+        } else {
+          return val.isBusy;
+        }
+      }),
+    [showFreeScooters, scooter]
+  );
+
   return (
     <div className="container mx-auto bg-slate-100 min-h-[400px] flex flex-col gap-4 p-4">
-      {scooter.map((s) => (
+      {filteredScooters.map((s) => (
         <Scooter key={s.id} scooter={s} />
       ))}
     </div>
   );
 }
-
-Middle.propTypes = {
-  newScooter: PropTypes.object,
-};
