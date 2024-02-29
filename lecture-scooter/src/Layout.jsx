@@ -10,6 +10,10 @@ export default function Layout() {
   //   setNewScooter(scooter);
   // }
 
+  function resetNewScooter() {
+    setNewScooter(null);
+  }
+
   return (
     <div>
       <Top
@@ -17,7 +21,7 @@ export default function Layout() {
           setNewScooter(scooter);
         }}
       />
-      <Middle newScooter={newScooter} />
+      <Middle newScooter={newScooter} resetInput={resetNewScooter} />
       <Bottom />
     </div>
   );
