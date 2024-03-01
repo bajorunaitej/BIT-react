@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Stopwatch() {
   const [time, setTime] = useState({ ms: 0, s: 0, m: 0, h: 0 });
   const [interv, setInterv] = useState();
-  //   const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState(0);
 
   //   not started = 0
   //   started = 1
@@ -13,7 +13,7 @@ export default function Stopwatch() {
 
   const start = () => {
     run();
-    // setStatus(1);
+    setStatus(1);
     setInterv(setInterval(run, 10));
   };
 
@@ -41,22 +41,22 @@ export default function Stopwatch() {
 
   const stop = () => {
     clearInterval(interv);
-    // setStatus(2);
+    setStatus(2);
   };
 
   const reset = () => {
     clearInterval(interv);
-    // setStatus(0);
+    setStatus(0);
     setTime({ ms: 0, s: 0, m: 0, h: 0 });
   };
 
   const resume = () => start();
 
   return (
-    <div className="m-3">
+    <div className="flex flex-col min-w-[300px] items-center m-3">
       <StopwatchDisplay time={time} />
       <StopwatchBtn
-        // status={status}
+        status={status}
         start={start}
         stop={stop}
         reset={reset}

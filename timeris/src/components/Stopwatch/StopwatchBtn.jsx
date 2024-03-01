@@ -35,7 +35,7 @@ export default function StopwatchBtn(props) {
       {props.status === 2 ? (
         <div className="flex gap-4">
           <button
-            className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#7e3131] transition duration-200 ease-in-out"
+            className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#076d07] transition duration-200 ease-in-out"
             onClick={props.resume}
           >
             Resume
