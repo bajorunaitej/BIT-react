@@ -1,11 +1,12 @@
+/* eslint-disable react/prop-types */
 export default function TimerBtn({
   isRunning,
   startTimer,
-  stopTimer,
+  resetTimer,
   pauseTimer,
 }) {
   return (
-    <div>
+    <div className="flex gap-4">
       {!isRunning && (
         <button
           onClick={startTimer}
@@ -16,18 +17,18 @@ export default function TimerBtn({
       )}
       {isRunning && (
         <button
-          onClick={stopTimer}
-          className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#7e3131] transition duration-200 ease-in-out"
+          onClick={pauseTimer}
+          className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#6b3ea7] transition duration-200 ease-in-out"
         >
-          Stop
+          Pause
         </button>
       )}
       {""}
       <button
-        onClick={pauseTimer}
-        className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#6b3ea7] transition duration-200 ease-in-out"
+        onClick={resetTimer}
+        className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#7e3131] transition duration-200 ease-in-out"
       >
-        Pause
+        Reset
       </button>
     </div>
   );

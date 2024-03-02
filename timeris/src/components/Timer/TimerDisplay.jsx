@@ -15,7 +15,6 @@ export default function TimerDisplay({
         <label>h: </label>
         <input
           value={hours}
-          min={0}
           onChange={changeHours}
           className="w-[25px] bg-yellow-300 rounded hover:bg-yellow-400 text-center outline-orange-400 "
         />
@@ -25,8 +24,6 @@ export default function TimerDisplay({
         <label>m: </label>
         <input
           value={minutes}
-          min={0}
-          max={59}
           onChange={changeMinutes}
           className="w-[25px] bg-yellow-300 rounded hover:bg-yellow-400 text-center outline-orange-400"
         />
@@ -36,8 +33,6 @@ export default function TimerDisplay({
         <label>s: </label>
         <input
           value={seconds}
-          min={0}
-          max={59}
           onChange={changeSeconds}
           className="w-[25px] bg-yellow-300 rounded hover:bg-yellow-400 text-center outline-orange-400"
         />

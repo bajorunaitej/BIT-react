@@ -14,18 +14,16 @@ export default function Timer() {
     if (isRunning) {
       interval = setInterval(() => {
         if (miliSec > 0) {
-          setMiliSec((miliSec) => {
-            miliSec - 1;
-          });
+          setMiliSec((prevMiliSec) => prevMiliSec - 1);
         } else if (seconds > 0) {
-          setSeconds((seconds) => seconds - 1);
+          setSeconds((prevSeconds) => prevSeconds - 1);
           setMiliSec(99);
         } else if (minutes > 0) {
-          setMinutes((minutes) => minutes - 1);
+          setMinutes((prevMinutes) => prevMinutes - 1);
           setSeconds(59);
           setMiliSec(99);
         } else if (hours > 0) {
-          setHours((hours) => hours - 1);
+          setHours((prevHours) => prevHours - 1);
           setMinutes(59);
           setSeconds(59);
           setMiliSec(99);
@@ -47,6 +45,31 @@ export default function Timer() {
     setSeconds(e.target.value);
   };
 
+  // startTimer,
+  // resetTimer,
+  // pauseTimer,
+
+  //Start
+  function startTimer() {
+    if (hours !== 0 || minutes !== 0 || seconds !== 0 || miliSec !== 0)
+      setIsRunning(true);
+    else window.alert("Nustatyk laiką");
+  }
+
+  //Pause
+  function pauseTimer() {
+    setIsRunning(false);
+  }
+
+  //Reset
+  function resetTimer() {
+    setIsRunning(false);
+    setMiliSec(0);
+    setSeconds(0);
+    setMinutes(0);
+    setHours(0);
+  }
+
   return (
     <div className="flex flex-col min-w-[300px] items-center m-3">
       <TimerDisplay
@@ -58,7 +81,12 @@ export default function Timer() {
         changeMinutes={changeMinutes}
         changeSeconds={changeSeconds}
       />
-      <TimerBtn isRunning={isRunning} />
+      <TimerBtn
+        isRunning={isRunning}
+        startTimer={startTimer}
+        pauseTimer={pauseTimer}
+        resetTimer={resetTimer}
+      />
     </div>
   );
 }
