@@ -29,6 +29,7 @@ export default function StopwatchDisplay(props) {
       <span>
         {props.time.ms >= 10 ? props.time.ms : "0" + props.time.ms + "ms"}
       </span>
+      &nbsp;:&nbsp;
     </div>
   );
 }

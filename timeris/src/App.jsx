@@ -5,60 +5,49 @@ import Timer from "./components/Timer";
 import Stopwatch from "./components/Stopwatch";
 import { useState } from "react";
 
-function App({ displayClock }) {
-  const [displayStatus, setDisplayStatus] = useState(null);
+function App() {
+  const [active, setActive] = useState("active1");
 
-  const displayClock = () => {};
+  const handleActive = (activeClock) => {
+    setActive(activeClock);
+  };
+
   return (
     <div className="container mx-auto flex flex-col justify-top items-center bg-[#4f1a586e] min-h-[200px] p-4 min-w-[350px]">
       <div className="flex justify-between items-center w-[60%] gap-5">
-        <p
-          displayClock={displayClock}
-          className="flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded"
+        <button
+          onClick={() => handleActive("active1")}
+          className={`flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded ${
+            active === "active1" ? "bg-slate-500" : ""
+          }`}
         >
           <span>
             <CgSandClock />
           </span>
           TIMER
-        </p>
-        <p className="flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded">
+        </button>
+        <button
+          onClick={() => handleActive("active2")}
+          className={`flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded ${
+            active === "active2" ? "bg-slate-500" : ""
+          }`}
+        >
           <span>
             <TiStopwatch />
           </span>
           STOPWATCH
-        </p>
+        </button>
       </div>
       <div>
-        <Timer />
-        <Stopwatch />
+        <div className={`p-2 ${active === "active1" ? "block" : "hidden"}`}>
+          <Timer />
+        </div>
+        <div className={`p-2 ${active === "active2" ? "block" : "hidden"}`}>
+          <Stopwatch />
+        </div>
       </div>
     </div>
   );
 }
 
 export default App;
-
-{
-  /* <>
-<div className="container  flex justify-evenly mx-auto bg-yellow-300 min-h-[200px] p-4 mt-4">
-  <div className="flex flex-col items-center w-fit">
-    <p className="flex items-center justify-center align-top min-w-fit w-[50%] gap-2 cursor-pointer border border-zinc-500 p-2 rounded">
-      <span>
-        <CgSandClock />
-      </span>
-      TIMER
-    </p>
-    <Timer />
-  </div>
-  <div className="flex flex-col items-center w-fit">
-    <p className="flex items-center justify-center align-top min-w-fit w-[50%] gap-2 cursor-pointer border border-zinc-500 p-2 rounded">
-      <span>
-        <TiStopwatch />
-      </span>
-      STOPWATCH
-    </p>
-    <Stopwatch />
-  </div>
-</div>
-</> */
-}

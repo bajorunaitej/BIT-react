@@ -2,7 +2,7 @@ import StopwatchBtn from "./Stopwatch/StopwatchBtn";
 import StopwatchDisplay from "./Stopwatch/StopwatchDisplay";
 import { useState } from "react";
 
-export default function Stopwatch({ displayClock }) {
+export default function Stopwatch() {
   const [time, setTime] = useState({ ms: 0, s: 0, m: 0, h: 0 });
   const [interv, setInterv] = useState();
   const [status, setStatus] = useState(0);
@@ -53,10 +53,7 @@ export default function Stopwatch({ displayClock }) {
   const resume = () => start();
 
   return (
-    <div
-      className="flex flex-col w-[250px] items-center m-3"
-      onClick={displayClock}
-    >
+    <div className="flex flex-col w-[250px] items-center m-3">
       <StopwatchDisplay time={time} />
       <StopwatchBtn
         status={status}

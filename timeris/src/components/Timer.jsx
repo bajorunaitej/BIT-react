@@ -2,12 +2,13 @@ import TimerDisplay from "./Timer/TimerDisplay";
 import TimerBtn from "./Timer/TimerBtn";
 import { useState, useEffect } from "react";
 
-export default function Timer({ displayClock }) {
+export default function Timer() {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [miliSec, setMiliSec] = useState(0);
   const [isRunning, setIsRunning] = useState(null);
+  const [timerFinished, setTimerFinished] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -27,11 +28,20 @@ export default function Timer({ displayClock }) {
           setMinutes(59);
           setSeconds(59);
           setMiliSec(99);
+        } else {
+          setTimerFinished(true); // Timer finished
+          setIsRunning(false); // Stop the timer
         }
       }, 10);
     }
     return () => clearInterval(interval);
   }, [miliSec, seconds, minutes, hours, isRunning]);
+
+  useEffect(() => {
+    if (timerFinished) {
+      alert("Laikas baigėsi!");
+    }
+  }, [timerFinished]);
 
   const changeHours = (e) => {
     setHours(e.target.value);
@@ -64,6 +74,7 @@ export default function Timer({ displayClock }) {
   //Reset
   function resetTimer() {
     setIsRunning(false);
+    setTimerFinished(false);
     setMiliSec(0);
     setSeconds(0);
     setMinutes(0);
@@ -71,10 +82,7 @@ export default function Timer({ displayClock }) {
   }
 
   return (
-    <div
-      className="flex flex-col w-[250px] items-center m-3"
-      onClick={displayClock}
-    >
+    <div className="flex flex-col w-[250px] items-center m-3">
       <TimerDisplay
         miliSec={miliSec}
         seconds={seconds}
