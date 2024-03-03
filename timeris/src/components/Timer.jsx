@@ -2,7 +2,7 @@ import TimerDisplay from "./Timer/TimerDisplay";
 import TimerBtn from "./Timer/TimerBtn";
 import { useState, useEffect } from "react";
 
-export default function Timer() {
+export default function Timer({ displayClock }) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -71,7 +71,10 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col min-w-[300px] items-center m-3">
+    <div
+      className="flex flex-col w-[250px] items-center m-3"
+      onClick={displayClock}
+    >
       <TimerDisplay
         miliSec={miliSec}
         seconds={seconds}

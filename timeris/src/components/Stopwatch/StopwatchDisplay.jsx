@@ -12,8 +12,12 @@ export default function StopwatchDisplay(props) {
       );
   };
   return (
-    <div className="m-3">
+    <div className="flex m-3 font-semibold text-[20px]">
       {h()}&nbsp;:&nbsp;
+      {/* <span>
+        {props.time.h >= 10 ? props.time.h : "0" + props.time.h + "h"}
+      </span>
+      &nbsp;:&nbsp; */}
       <span>
         {props.time.m >= 10 ? props.time.m : "0" + props.time.m + "m"}
       </span>
@@ -25,7 +29,6 @@ export default function StopwatchDisplay(props) {
       <span>
         {props.time.ms >= 10 ? props.time.ms : "0" + props.time.ms + "ms"}
       </span>
-      &nbsp;:&nbsp;
     </div>
   );
 }
