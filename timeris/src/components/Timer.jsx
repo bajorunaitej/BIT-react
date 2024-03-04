@@ -44,15 +44,15 @@ export default function Timer() {
   }, [timerFinished]);
 
   const changeHours = (e) => {
-    setHours(e.target.value);
+    if (!isNaN(e.target.value)) setHours(e.target.value);
   };
 
   const changeMinutes = (e) => {
-    setMinutes(e.target.value);
+    if (!isNaN(e.target.value)) setMinutes(e.target.value);
   };
 
   const changeSeconds = (e) => {
-    setSeconds(e.target.value);
+    if (!isNaN(e.target.value)) setSeconds(e.target.value);
   };
 
   // startTimer,

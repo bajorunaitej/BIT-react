@@ -53,7 +53,7 @@ export default function Stopwatch() {
   const resume = () => start();
 
   return (
-    <div className="flex flex-col w-[250px] items-center m-3">
+    <div className="flex flex-col w-[100%] items-center m-3">
       <StopwatchDisplay time={time} />
       <StopwatchBtn
         status={status}
