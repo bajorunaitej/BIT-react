@@ -13,7 +13,7 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto flex flex-col items-center bg-[#202124] h-[300px] w-[500px] mt-20 text-white">
+    <div className="container mx-auto flex flex-col items-center border border-zinc-500 rounded h-[300px] w-[600px] mt-20 text-white">
       <div className="flex justify-evenly items-center w-[100%]">
         <button
           onClick={() => handleActive("activeTimer")}
