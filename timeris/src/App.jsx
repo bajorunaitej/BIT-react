@@ -13,11 +13,11 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto flex flex-col justify-center items-center bg-[#4f1a586e] min-h-[200px] p-4 min-w-[350px]">
-      <div className="flex justify-between items-center w-[60%] gap-5">
+    <div className="container mx-auto flex flex-col items-center bg-[#202124] h-[300px] w-[500px] mt-20 text-white">
+      <div className="flex justify-evenly items-center w-[100%]">
         <button
           onClick={() => handleActive("activeTimer")}
-          className={`flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded ${
+          className={`flex justify-center items-center p-2 cursor-pointer border-b border-zinc-500 rounded w-[100%] ${
             active === "activeTimer" ? "bg-slate-500" : ""
           }`}
         >
@@ -28,7 +28,7 @@ function App() {
         </button>
         <button
           onClick={() => handleActive("activeStopwatch")}
-          className={`flex justify-evenly items-center p-2 gap-2 cursor-pointer border border-zinc-500 rounded ${
+          className={`flex justify-center items-center p-2 cursor-pointer border-b border-zinc-500 rounded w-[100%] ${
             active === "activeStopwatch" ? "bg-slate-500" : ""
           }`}
         >
@@ -38,7 +38,8 @@ function App() {
           STOPWATCH
         </button>
       </div>
-      <div>
+
+      <div className="my-[30px]">
         <div className={`${active === "activeTimer" ? "block" : "hidden"} p-1`}>
           <Timer />
         </div>

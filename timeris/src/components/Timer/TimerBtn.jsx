@@ -6,11 +6,11 @@ export default function TimerBtn({
   pauseTimer,
 }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 mb-[10px] mt-[50px] items-start ">
       {!isRunning && (
         <button
           onClick={startTimer}
-          className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#076d07] transition duration-200 ease-in-out"
+          className="bg-[#fff] p-2 rounded text-black hover:text-white hover:bg-[#076d07] transition duration-200 ease-in-out"
         >
           Start
         </button>
@@ -18,7 +18,7 @@ export default function TimerBtn({
       {isRunning && (
         <button
           onClick={pauseTimer}
-          className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#6b3ea7] transition duration-200 ease-in-out"
+          className="bg-[#fff] p-2 rounded text-black hover:text-white hover:bg-[#6b3ea7] transition duration-200 ease-in-out"
         >
           Pause
         </button>
@@ -26,7 +26,7 @@ export default function TimerBtn({
       {""}
       <button
         onClick={resetTimer}
-        className="bg-[#fff] p-2 rounded hover:text-white hover:bg-[#7e3131] transition duration-200 ease-in-out"
+        className="bg-[#fff] p-2 rounded text-black hover:text-white hover:bg-[#7e3131] transition duration-200 ease-in-out"
       >
         Reset
       </button>
