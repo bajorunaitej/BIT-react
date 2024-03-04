@@ -10,7 +10,6 @@ export default function Person({ person }) {
       <p>Email: {person.email}</p>
       <p>Phone nr: {person.phone}</p>
       <p>Country: {person.location.country}</p>
-      <p></p>
     </div>
   );
 }

@@ -5,32 +5,31 @@ import { callPeopleApi } from "./api";
 function App() {
   const [peopleList, setPeopleList] = useState([]);
   const [selectedGender, setSelectedGender] = useState("female");
-  const [sortByName, setSortByName] = useEffect("original");
+  const [sortByName, setSortByName] = useState("original");
 
   useEffect(() => {
     callPeopleApi((data) => {
       setPeopleList(data.results);
     });
   }, []);
-
   const filteredPeopleList = useMemo(() => {
     return peopleList
       .filter((personObj) => {
         if (selectedGender === "any") return true;
-        return personObj.gender === selectedGender;
+        else return personObj.gender === selectedGender;
       })
-      .sort((personObj1, personObj2) => {
+      .sort((personObj1, personObject2) => {
         const comparisonValue = personObj1.name.first.localeCompare(
-          personObj2.person.name.first
+          personObject2.name.first
         );
         if (sortByName === "asc") return comparisonValue;
         else if (sortByName === "desc") return comparisonValue * -1;
         else return 0;
       });
-  }, [peopleList, selectedGender]);
-
+  }, [peopleList, selectedGender, sortByName]);
   return (
     <div>
+      <h1>Visi žmonės</h1>
       <select
         value={selectedGender}
         onChange={(e) => {
@@ -48,12 +47,12 @@ function App() {
         }}
       >
         <option value="asc">Ascending name</option>
-        <option value="desc">descending name</option>
+        <option value="desc">Descending name</option>
         <option value="original">Original order</option>
       </select>
-      <PeopleList
-        people={selectedGender === "any" ? peopleList : filteredPeopleList}
-      />
+      <PeopleList people={filteredPeopleList} />
+      <h1>Įsiminti žmonės</h1>
+      <PeopleList people={peopleList} />
     </div>
   );
 }
