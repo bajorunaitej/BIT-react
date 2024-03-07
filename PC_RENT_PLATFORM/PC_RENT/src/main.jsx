@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RegistrationWindow from "./Registration/Register";
+import NotFound from "./not-found/NotFound";
+import LoginPage from "./Login/LoginPage";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +17,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <div>Prisijungimo puslapis</div>,
+    element: <LoginPage />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
