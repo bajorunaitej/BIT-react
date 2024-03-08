@@ -3,13 +3,12 @@
 @tailwind utilities;
 
 .not-found-bg {
-  background-image: url(./assets/DSC06535.JPG);
+  background-image: url(./assets/not-found.jpg);
   background-size: cover;
   background-position: bottom;
 }
 
 .auth-bg {
-  background-image: url(./assets/pexels-dexter-fernandes-2646237.jpg);
+  background-image: url(./assets/register-bg.jpg);
   background-size: cover;
-  background-position: bottom;
 }
