@@ -71,7 +71,7 @@ module.exports = class Country {
     WHERE id=?;`,
       [id]
     );
-    if (result[0].affectedRows === 0) throw new Error("toks įrašas nerastas");
+    if (result[0].affectedRows === 0) throw new Error("");
     return result;
   }
 
