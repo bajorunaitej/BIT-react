@@ -29,8 +29,8 @@ module.exports = class Pc {
   async update() {
     const result = await executeQuery(
       `UPDATE pc SET
-            user_id = ?, CPU = ?, GPU = ?, DDR = ?, RAM_speed_MHz = ?, RAM_GB = ?, rent_history = ?, pc_type = ?
-            WHERE id = ?;`,
+        user_id = ?, CPU = ?, GPU = ?, DDR = ?, RAM_speed_MHz = ?, RAM_GB = ?, rent_history = ?, pc_type = ?
+        WHERE id = ?;`,
       [
         this.user_id,
         this.CPU,
@@ -66,6 +66,55 @@ module.exports = class Pc {
       ]
     );
     this.#id = result[0].insertId;
+  }
+
+  static async findAll() {
+    let result = await executeQuery(`SELECT * FROM pc`);
+    result = result[0].map(
+      (pcObj) =>
+        new Pc(
+          {
+            user_id: pcObj.user_id,
+            CPU: pcObj.CPU,
+            GPU: pcObj.GPU,
+            DDR: pcObj.DDR,
+            RAM_speed_MHz: pcObj.RAM_speed_MHz,
+            RAM_GB: pcObj.RAM_GB,
+            rent_history: pcObj.rent_history,
+            pc_type: pcObj.pc_type,
+          },
+          pcObj.id
+        )
+    );
+    return result;
+  }
+
+  static async findById(id) {
+    const results = await executeQuery(`SELECT * FROM pc WHERE id=?`, [id]);
+    const result = results[0][0];
+    return new Pc(
+      {
+        user_id: result.user_id,
+        CPU: result.CPU,
+        GPU: result.GPU,
+        DDR: result.DDR,
+        RAM_speed_MHz: result.RAM_speed_MHz,
+        RAM_GB: result.RAM_GB,
+        rent_history: result.rent_history,
+        pc_type: result.pc_type,
+      },
+      result.id
+    );
+  }
+
+  static async deleteById(id) {
+    const result = await executeQuery(
+      `DELETE FROM pc
+    WHERE id=?;`,
+      [id]
+    );
+    if (result[0].affectedRows === 0) throw new Error("");
+    return result;
   }
 
   //---------------------------------------------

@@ -37,7 +37,7 @@ module.exports = class Country {
   }
 
   static async findAll() {
-    const result = await executeQuery(`SELECT * FROM countries`);
+    let result = await executeQuery(`SELECT * FROM countries`);
     result = result[0].map(
       (countryObj) =>
         new Country(
