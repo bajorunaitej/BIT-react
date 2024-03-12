@@ -1,3 +1,116 @@
 const executeStatement = require("../mysql");
 
+module.exports = class User {
+  username;
+  pass_encoded;
+  email;
+  birth_date;
+  phone;
+  #id;
+  address_id;
+
+  constructor(
+    { username, pass_encoded, email, birth_date, phone, address_id },
+    id = null
+  ) {
+    this.username = username;
+    this.pass_encoded = pass_encoded;
+    this.email = email;
+    this.birth_date = birth_date;
+    this.phone = phone;
+    this.address_id = address_id;
+    this.#id = id;
+  }
+
+  async update() {
+    const result = await executeStatement(
+      `UPDATE users SET 
+            username = ?, pass_encoded = ?, email = ?, birth_date = ?, phone = ?, address_id = ?
+            WHERE id = ?;`,
+      [
+        this.username,
+        this.pass_encoded,
+        this.email,
+        this.birth_date,
+        this.phone,
+        this.address_id,
+        this.#id,
+      ]
+    );
+    return result;
+  }
+
+  get id() {
+    return this.#id;
+  }
+
+  async save() {
+    const result = await executeStatement(
+      `INSERT INTO users (username, pass_encoded, email, birth_date, phone, address_id) 
+        VALUES (?, ?, ?, ?, ?, ?);`,
+      [
+        this.username,
+        this.pass_encoded,
+        this.email,
+        this.birth_date,
+        this.phone,
+        this.address_id,
+      ]
+    );
+
+    this.#id = result[0].insertId;
+  }
+
+  static async findAll() {
+    const results = await executeStatement(`SELECT * FROM users`);
+    const result = results[0].map(
+      (userObj) =>
+        new User(
+          {
+            username: userObj.username,
+            pass_encoded: userObj.pass_encoded,
+            email: userObj.email,
+            birth_date: userObj.birth_date,
+            phone: userObj.phone,
+            address_id: userObj.address_id,
+          },
+          userObj.id
+        )
+    );
+    return result;
+  }
+
+  static async findById(id) {
+    const results = await executeStatement(`SELECT * FROM users WHERE id = ?`, [
+      id,
+    ]);
+    const result = results[0][0];
+    return new User(
+      {
+        username: result.username,
+        pass_encoded: result.pass_encoded,
+        email: result.email,
+        birth_date: result.birth_date,
+        phone: result.phone,
+        address_id: result.address_id,
+      },
+      result.id
+    );
+  }
+
+  static async deleteById(id) {
+    const result = await executeStatement(
+      `DELETE FROM users  
+        WHERE id = ?;`,
+      [id]
+    );
+    if (result[0].affectedRows === 0) throw new Error("");
+    return result;
+  }
+
+  getInstance() {
+    return { ...this, id: this.#id };
+  }
+};
+
 // const result = executeStatement(`SELECT * FROM users`);
