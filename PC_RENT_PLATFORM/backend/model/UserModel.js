@@ -1,13 +1,13 @@
 const executeStatement = require("../mysql");
 
 module.exports = class User {
+  #id;
   username;
   pass_encoded;
   salt;
   email;
   birth_date;
   phone;
-  #id;
   address_id;
 
   constructor(
@@ -27,8 +27,8 @@ module.exports = class User {
   async update() {
     const result = await executeStatement(
       `UPDATE users SET 
-            username = ?, pass_encoded = ?, email = ?, birth_date = ?, phone = ?, address_id = ?, salt=?
-            WHERE id = ?;`,
+        username = ?, pass_encoded = ?, email = ?, birth_date = ?, phone = ?, address_id = ?, salt=?
+        WHERE id = ?;`,
       [
         this.username,
         this.pass_encoded,
@@ -89,28 +89,26 @@ module.exports = class User {
     const results = await executeStatement(`SELECT * FROM users WHERE id = ?`, [
       id,
     ]);
-    const result = results[0][0];
+    const user = results[0];
     return new User(
       {
-        username: result.username,
-        pass_encoded: result.pass_encoded,
-        email: result.email,
-        birth_date: result.birth_date,
-        phone: result.phone,
-        address_id: result.address_id,
-        salt: result.salt,
+        username: user.username,
+        pass_encoded: user.pass_encoded,
+        email: user.email,
+        birth_date: user.birth_date,
+        phone: user.phone,
+        address_id: user.address_id,
+        salt: user.salt,
       },
-      result.id
+      user.id
     );
   }
 
   static async deleteById(id) {
-    const result = await executeStatement(
-      `DELETE FROM users  
-        WHERE id = ?;`,
-      [id]
-    );
-    if (result[0].affectedRows === 0) throw new Error("");
+    const result = await executeStatement(`DELETE FROM users WHERE id = ?;`, [
+      id,
+    ]);
+    if (result[0].affectedRows === 0) throw new Error("User not found");
     return result;
   }
 

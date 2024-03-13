@@ -2,44 +2,41 @@ const executeQuery = require("../mysql");
 
 module.exports = class Pc {
   #id;
-  user_id;
-  CPU;
-  GPU;
-  DDR;
-  RAM_speed_MHz;
-  RAM_GB;
-  rent_history;
-  pc_type;
+  ownerId;
+  cpu;
+  gpu;
+  ramType;
+  ramSpeed;
+  ramAmount;
+  pcType;
 
   constructor(
-    { user_id, CPU, GPU, DDR, RAM_speed_MHz, RAM_GB, rent_history, pc_type },
+    { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pcType },
     id = null
   ) {
     this.#id = id;
-    this.user_id = user_id;
-    this.CPU = CPU;
-    this.GPU = GPU;
-    this.DDR = DDR;
-    this.RAM_speed_MHz = RAM_speed_MHz;
-    this.RAM_GB = RAM_GB;
-    this.rent_history = rent_history;
-    this.pc_type = pc_type;
+    this.ownerId = ownerId;
+    this.cpu = cpu;
+    this.gpu = gpu;
+    this.ramType = ramType;
+    this.ramSpeed = ramSpeed;
+    this.ramAmount = ramAmount;
+    this.pcType = pcType;
   }
 
   async update() {
     const result = await executeQuery(
       `UPDATE pc SET
-        user_id = ?, CPU = ?, GPU = ?, DDR = ?, RAM_speed_MHz = ?, RAM_GB = ?, rent_history = ?, pc_type = ?
+      ownerId = ?, cpu = ?, gpu = ?, ramType = ?, ramSpeed = ?, ramAmount = ?, pcType = ?
         WHERE id = ?;`,
       [
-        this.user_id,
-        this.CPU,
-        this.GPU,
-        this.DDR,
-        this.RAM_speed_MHz,
-        this.RAM_GB,
-        this.rent_history,
-        this.pc_type,
+        this.ownerId,
+        this.cpu,
+        this.gpu,
+        this.ramType,
+        this.ramSpeed,
+        this.ramAmount,
+        this.pcType,
         this.#id,
       ]
     );
@@ -53,17 +50,16 @@ module.exports = class Pc {
 
   async save() {
     const result = await executeQuery(
-      `INSERT INTO pc (user_id, CPU, GPU, DDR, RAM_speed_MHz, RAM_GB, rent_history, pc_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+      `INSERT INTO pc (owner_id, cpu, gpu, ram_type, ram_speed, ram_amount, pc_type) 
+      VALUES (?, ?, ?, ?, ?, ?, ?);`,
       [
-        this.user_id,
-        this.CPU,
-        this.GPU,
-        this.DDR,
-        this.RAM_speed_MHz,
-        this.RAM_GB,
-        this.rent_history,
-        this.pc_type,
+        this.ownerId,
+        this.cpu,
+        this.gpu,
+        this.ramType,
+        this.ramSpeed,
+        this.ramAmount,
+        this.pcType,
       ]
     );
     this.#id = result[0].insertId;
@@ -75,14 +71,13 @@ module.exports = class Pc {
       (pcObj) =>
         new Pc(
           {
-            user_id: pcObj.user_id,
-            CPU: pcObj.CPU,
-            GPU: pcObj.GPU,
-            DDR: pcObj.DDR,
-            RAM_speed_MHz: pcObj.RAM_speed_MHz,
-            RAM_GB: pcObj.RAM_GB,
-            rent_history: pcObj.rent_history,
-            pc_type: pcObj.pc_type,
+            ownerId: pcObj.owner_id,
+            cpu: pcObj.cpu,
+            gpu: pcObj.gpu,
+            ramType: pcObj.ram_type,
+            ramSpeed: pcObj.ram_speed,
+            ramAmount: pcObj.ram_amount,
+            pcType: pcObj.pc_type,
           },
           pcObj.id
         )
@@ -92,19 +87,18 @@ module.exports = class Pc {
 
   static async findById(id) {
     const results = await executeQuery(`SELECT * FROM pc WHERE id=?`, [id]);
-    const result = results[0][0];
+    const pc = results[0][0];
     return new Pc(
       {
-        user_id: result.user_id,
-        CPU: result.CPU,
-        GPU: result.GPU,
-        DDR: result.DDR,
-        RAM_speed_MHz: result.RAM_speed_MHz,
-        RAM_GB: result.RAM_GB,
-        rent_history: result.rent_history,
-        pc_type: result.pc_type,
+        ownerId: pc.owner_id,
+        cpu: pc.cpu,
+        gpu: pc.gpu,
+        ramType: pc.ram_type,
+        ramSpeed: pc.ram_speed,
+        ramAmount: pc.ram_amount,
+        pcType: pc.pc_type,
       },
-      result.id
+      pc.id
     );
   }
 
@@ -114,7 +108,7 @@ module.exports = class Pc {
     WHERE id=?;`,
       [id]
     );
-    if (result[0].affectedRows === 0) throw new Error("");
+    if (result[0].affectedRows === 0) throw new Error("PC not found");
     return result;
   }
 

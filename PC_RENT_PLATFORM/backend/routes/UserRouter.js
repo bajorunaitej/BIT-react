@@ -61,7 +61,6 @@ router.get("/register", async (req, res) => {
     };
 
     req.session.isLoggedIn = true;
-    req.session.user.username;
 
     res.status(201).send({
       user: newUser.getInstance(),
@@ -75,15 +74,6 @@ router.get("/register", async (req, res) => {
       res.status(500).json({ message: "Serverio klaida" });
     }
   }
-
-  // country,
-  // county,
-  // municipality,
-  // postalCode,
-  // city,
-  // street,
-  // streetNumber,
-  // apartmentNumber,
 });
 
 router.post("/", async (req, res) => {
@@ -126,7 +116,7 @@ router.delete("/:id", async (req, res) => {
     const result = await UserModel.deleteById(req.params.id);
     res.send("Įrašas buvo sėkmingai ištrintas");
   } catch (err) {
-    if (err.message === "Įrašas nerastas")
+    if (err.message === "User not found")
       res
         .status(404)
         .send("Įrašas su id = " + req.params.id + " buvo nerastas");
