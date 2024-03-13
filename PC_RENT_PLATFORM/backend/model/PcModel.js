@@ -54,15 +54,16 @@ module.exports = class Pc {
   async save() {
     const result = await executeQuery(
       `INSERT INTO pc (user_id, CPU, GPU, DDR, RAM_speed_MHz, RAM_GB, rent_history, pc_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`[
-        (this.user_id,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        this.user_id,
         this.CPU,
         this.GPU,
         this.DDR,
         this.RAM_speed_MHz,
         this.RAM_GB,
         this.rent_history,
-        this.pc_type)
+        this.pc_type,
       ]
     );
     this.#id = result[0].insertId;

@@ -18,6 +18,8 @@ connection.connect((err) => {
 
 async function execute(sql, parameters = []) {
   try {
+    console.log(sql);
+    console.log(parameters);
     const result = await connection.promise().execute(sql, parameters);
     return result;
   } catch (err) {

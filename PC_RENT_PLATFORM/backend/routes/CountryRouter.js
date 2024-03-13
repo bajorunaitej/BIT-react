@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const CountryModel = require("../model/CountryModel");
 
+router.get("/register", (req, res) => {});
+
 router.post("/", async (req, res) => {
   try {
     const { country, countryShort } = req.body;

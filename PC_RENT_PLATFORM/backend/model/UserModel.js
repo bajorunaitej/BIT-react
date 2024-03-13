@@ -3,6 +3,7 @@ const executeStatement = require("../mysql");
 module.exports = class User {
   username;
   pass_encoded;
+  salt;
   email;
   birth_date;
   phone;
@@ -10,22 +11,23 @@ module.exports = class User {
   address_id;
 
   constructor(
-    { username, pass_encoded, email, birth_date, phone, address_id },
+    { username, pass_encoded, email, birth_date, phone, address_id, salt },
     id = null
   ) {
+    this.#id = id;
     this.username = username;
     this.pass_encoded = pass_encoded;
     this.email = email;
     this.birth_date = birth_date;
     this.phone = phone;
     this.address_id = address_id;
-    this.#id = id;
+    this.salt = salt;
   }
 
   async update() {
     const result = await executeStatement(
       `UPDATE users SET 
-            username = ?, pass_encoded = ?, email = ?, birth_date = ?, phone = ?, address_id = ?
+            username = ?, pass_encoded = ?, email = ?, birth_date = ?, phone = ?, address_id = ?, salt=?
             WHERE id = ?;`,
       [
         this.username,
@@ -34,6 +36,7 @@ module.exports = class User {
         this.birth_date,
         this.phone,
         this.address_id,
+        this.salt,
         this.#id,
       ]
     );
@@ -46,8 +49,8 @@ module.exports = class User {
 
   async save() {
     const result = await executeStatement(
-      `INSERT INTO users (username, pass_encoded, email, birth_date, phone, address_id) 
-        VALUES (?, ?, ?, ?, ?, ?);`,
+      `INSERT INTO users (username, pass_encoded, email, birth_date, phone, address_id, salt) 
+        VALUES (?, ?, ?, ?, ?, ?, ?);`,
       [
         this.username,
         this.pass_encoded,
@@ -55,6 +58,7 @@ module.exports = class User {
         this.birth_date,
         this.phone,
         this.address_id,
+        this.salt,
       ]
     );
 
@@ -73,6 +77,7 @@ module.exports = class User {
             birth_date: userObj.birth_date,
             phone: userObj.phone,
             address_id: userObj.address_id,
+            salt: userObj.salt,
           },
           userObj.id
         )
@@ -93,6 +98,7 @@ module.exports = class User {
         birth_date: result.birth_date,
         phone: result.phone,
         address_id: result.address_id,
+        salt: result.salt,
       },
       result.id
     );
