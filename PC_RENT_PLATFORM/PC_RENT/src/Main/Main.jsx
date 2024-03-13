@@ -3,13 +3,13 @@ function AuthButtons() {
     <div>
       <a
         href="/registration"
-        className="px-4 py-1 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
+        className="px-4 py-1 border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
       >
         Register now
       </a>
       <a
         href="/login"
-        className="px-4 py-1 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
+        className="px-4 py-1 border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
       >
         Log in
       </a>
@@ -89,7 +89,7 @@ export default function Main() {
 
   return (
     <div className="h-[100vh] w-[100vw] flex justify-center items-center">
-      <div className="container w-[80%] bg-violet-300 min-h-[700px] max-h-[90vh] overflow-y-scroll rounded-lg p-6">
+      <div className="container w-[80%] bg-gray-500 min-h-[700px] max-h-[90vh] overflow-y-scroll rounded-lg p-6">
         {!isLoggedIn && <AuthButtons />}
         {isLoggedIn && (
           <a

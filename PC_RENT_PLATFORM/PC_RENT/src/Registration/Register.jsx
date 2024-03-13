@@ -10,12 +10,12 @@ export default function RegistrationWindow() {
     phone: "",
   });
 
-  // const [countries, setCountries] = useState([]);
-  // useEffect(() => {
-  //   getAllCountries((data) => {
-  //     console.log(data);
-  //   });
-  // });
+  const [countries, setCountries] = useState([]);
+  useEffect(() => {
+    getAllCountries((data) => {
+      console.log(data);
+    });
+  });
 
   const [addressDetails, setAddressDetails] = useState({
     country: "",
@@ -50,7 +50,7 @@ export default function RegistrationWindow() {
 
   return (
     <div className="bg-slate-300 w-[100vw] h-[100vh] flex justify-center items-center auth-bg">
-      <div className="w-4/5 min-h-[400px] max-w-[1000px] bg-violet-600 bg-opacity-80 p-4 rounded-md">
+      <div className="w-4/5 min-h-[400px] max-w-[1000px] bg-gray-500 bg-opacity-80 p-4 rounded-md">
         <h1 className="text-xl font-bold">Registration</h1>
         <hr className="mb-4" />
 
@@ -257,7 +257,7 @@ export default function RegistrationWindow() {
             </label>
           </div>
 
-          <button className="bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4">
+          <button className="border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4">
             Register
           </button>
         </form>
