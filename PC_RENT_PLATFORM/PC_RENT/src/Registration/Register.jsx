@@ -10,12 +10,12 @@ export default function RegistrationWindow() {
     phone: "",
   });
 
-  const [countries, setCountries] = useState([]);
-  useEffect(() => {
-    getAllCountries((data) => {
-      console.log(data);
-    });
-  });
+  // const [countries, setCountries] = useState([]);
+  // useEffect(() => {
+  //   getAllCountries((data) => {
+  //     console.log(data);
+  //   });
+  // });
 
   const [addressDetails, setAddressDetails] = useState({
     country: "",
