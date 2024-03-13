@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllCountries } from "/utils/api/countriesApi";
 
 export default function RegistrationWindow() {
   const [userDetails, setUserDetails] = useState({
@@ -7,6 +8,13 @@ export default function RegistrationWindow() {
     email: "",
     birthDate: "",
     phone: "",
+  });
+
+  const [countries, setCountries] = useState([]);
+  useEffect(() => {
+    getAllCountries((data) => {
+      console.log(data);
+    });
   });
 
   const [addressDetails, setAddressDetails] = useState({
