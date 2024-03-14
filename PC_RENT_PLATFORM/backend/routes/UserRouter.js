@@ -139,6 +139,26 @@ router.put("/:id", async (req, res) => {
   res.send(userObj.getInstance());
 });
 
+//login route
+//logout route
+
+router.get("/logout", async (req, res) => {
+  if (req.session.isLoggedIn) {
+    req.session.destroy();
+    return res.status(200).json({ message: "Sėkmingai buvote atjungtas" });
+  } else {
+    return res
+      .status(200)
+      .json({ message: "Tam kad atsijungti, turite prisijungti" });
+  }
+}); //reik mygtuko reacte - main.jsx
+
+router.get("/check-session", (req, res) => {
+  if (req.session.isLoggedIn)
+    return res.status(200).json({ isLoggedIn: req.session.isLoggedIn });
+  return res.status(200).json({ isLoggedIn: false });
+});
+
 //---------------------------------------------------------------
 
 module.exports = router;
