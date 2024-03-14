@@ -9,37 +9,39 @@ export default function RegistrationWindow() {
     username: "",
     password: "",
     email: "",
-    birthDate: "",
+    birth_date: "",
     phone: "",
   });
-
-  const [countries, setCountries] = useState([]);
-  const navigate = useNavigate();
-  useEffect(() => {
-    getAllCountries((data) => {
-      setCountries(data);
-    });
-    checkSession((data) => {
-      if (data.isLoggedIn) {
-        navigate("/");
-      } else console.log("Vartotojas neprisijungęs");
-    });
-  });
-
-  const sortedCountries = useMemo(() => {
-    return countries.sort((a, b) => a.country.localeCompare(b.country));
-  }, [countries]);
 
   const [addressDetails, setAddressDetails] = useState({
     country: "",
     county: "",
     municipality: "",
-    postalCode: "",
+    zipCode: "",
     city: "",
     street: "",
     streetNumber: "",
     apartmentNumber: "",
   });
+
+  const [countries, setCountries] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    getAllCountries((data) => setCountries(data));
+
+    checkSession((data) => {
+      //registration
+      if (data.isLoggedIn) {
+        navigate("/");
+      } else {
+        console.log("Vartotojas neprisijungęs");
+      }
+    });
+  }, [navigate]);
+
+  const sortedCountries = useMemo(() => {
+    return countries.sort((a, b) => a.country.localeCompare(b.country));
+  }, [countries]);
 
   function setFieldInUserDetails(e, field) {
     const newObject = { ...userDetails };
@@ -47,19 +49,19 @@ export default function RegistrationWindow() {
     setUserDetails(newObject);
   }
 
-  function setFieldInAddressDetails(e, field) {
-    const newObject = { ...addressDetails };
-    newObject[field] = e.target.value;
-    setAddressDetails(newObject);
-  }
+  // function setFieldInAddressDetails(e, field) {
+  //   const newObject = { ...addressDetails };
+  //   newObject[field] = e.target.value;
+  //   setAddressDetails(newObject);
+  // }
 
-  function setNumberField(e, field, maxNumber) {
-    if (+e.target.value > maxNumber) {
-      if (+e.target.value || e.target.value === "") {
-        setFieldInAddressDetails(e, field);
-      }
-    }
-  }
+  // function setNumberField(e, field, maxNumber) {
+  //   if (+e.target.value > maxNumber) {
+  //     if (+e.target.value || e.target.value === "") {
+  //       setFieldInAddressDetails(e, field);
+  //     }
+  //   }
+  // }
 
   function sendRegistrationDetails() {
     const registrationDetails = { ...userDetails, ...addressDetails };
@@ -114,9 +116,9 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Birth date</span>
               <input
-                value={userDetails.birthDate}
-                onChange={(e) => setFieldInUserDetails(e, "birthDate")}
                 type="date"
+                value={userDetails.birth_date}
+                onChange={(e) => setFieldInUserDetails(e, "birth_date")}
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
             </label>
@@ -125,9 +127,9 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Phone</span>
               <input
+                type="number"
                 value={userDetails.phone}
                 onChange={(e) => setFieldInUserDetails(e, "phone")}
-                type="number"
                 placeholder="Enter your phone number"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -143,13 +145,21 @@ export default function RegistrationWindow() {
               <select
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
                 value={addressDetails.country}
-                onChange={(e) => setFieldInAddressDetails(e, "country")}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    country: e.target.value,
+                  })
+                }
               >
                 {sortedCountries.map((country) => (
                   <option key={`country-${country.id}`}>
                     {country.country}
                   </option>
                 ))}
+                {/* <option>Lithuania</option>
+                <option>Latvia</option>
+                <option>United Kingdom</option> */}
               </select>
               {/* <input
                 type="text"
@@ -165,7 +175,12 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.county}
-                onChange={(e) => setFieldInAddressDetails(e, "county")}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    county: e.target.value,
+                  })
+                }
                 placeholder="Enter your county"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -178,7 +193,12 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.municipality}
-                onChange={(e) => setFieldInAddressDetails(e, "municipality")}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    municipality: e.target.value,
+                  })
+                }
                 placeholder="Enter your municipality"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -190,8 +210,13 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Postal code</span>
               <input
                 type="text"
-                value={addressDetails.postalCode}
-                onChange={(e) => setFieldInAddressDetails(e, "postalCode")}
+                value={addressDetails.zipCode}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    zipCode: e.target.value,
+                  })
+                }
                 placeholder="Enter your postal code"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -204,7 +229,12 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.city}
-                onChange={(e) => setFieldInAddressDetails(e, "city")}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    city: e.target.value,
+                  })
+                }
                 placeholder="Enter your city"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -217,7 +247,12 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.street}
-                onChange={(e) => setFieldInAddressDetails(e, "street")}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    street: e.target.value,
+                  })
+                }
                 placeholder="Enter your street"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -229,18 +264,28 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Street number</span>
               <input
                 type="text"
-                value={addressDetails.streetNumber}
-                onChange={(e) => setNumberField(e, "streetNumber", 400)}
                 placeholder="Street number"
                 className="outline-none border w-1/5 px-2 py-1 rounded-lg"
+                value={addressDetails.streetNumber}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    streetNumber: e.target.value,
+                  })
+                }
               />
               <span> - </span>
               <input
                 type="text"
-                value={addressDetails.apartmentNumber}
-                onChange={(e) => setNumberField(e, "apartmentNumber", 400)}
                 placeholder="Apartment number"
-                className="outline-none border w-2/5 px-2 py-1 rounded-lg"
+                className="outline-none border w-2/5 px-2 py-1 rounded-md"
+                value={addressDetails.apartmentNumber}
+                onChange={(e) =>
+                  setAddressDetails({
+                    ...addressDetails,
+                    apartmentNumber: e.target.value,
+                  })
+                }
               />
             </label>
           </div>

@@ -88,8 +88,8 @@ export default function Main() {
   const isLoggedIn = false;
 
   return (
-    <div className="h-[100vh] w-[100vw] flex justify-center items-center">
-      <div className="container w-[80%] bg-gray-500 min-h-[700px] max-h-[90vh] overflow-y-scroll rounded-lg p-6">
+    <div className="flex justify-center items-center">
+      <div className="container w-[80%] bg-gray-500 min-h-[90vh] rounded-lg p-6">
         {!isLoggedIn && <AuthButtons />}
         {isLoggedIn && (
           <a
