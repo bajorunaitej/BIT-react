@@ -1,30 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const UserModel = require("../model/UserModel");
-const User = require("../model/UserModel");
+const AddresModel = require("../model/AddressModel");
 const security = require("../utils/security");
 
 // lochalhost:3000/api/user/register
 
-router.get("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const {
       username,
       password,
       email,
-      birthDate,
+      birth_date,
       phone,
       country,
       county,
       municipality,
-      zipCode: postalCode,
+      zipCode,
       city,
       street,
       streetNumber,
       apartmentNumber,
     } = req.body;
 
-    const newAddress = new Address({
+    const newAddress = new AddresModel({
       country,
       county,
       municipality,
@@ -41,17 +41,18 @@ router.get("/register", async (req, res) => {
     const salt = security.generateSalt();
     const hashedPassword = security.hashPassword(password, salt);
 
-    const newUser = new User({
+    const newUser = new UserModel({
       username,
       pass_encoded: hashedPassword,
       salt,
       email,
-      birthDate,
+      birth_date,
       phone,
       address_id: newAddress.id,
     });
 
     await newUser.save();
+    console.log(newUser);
 
     //3. Užregistruoti vartotojo sesiją
     req.session.user = {
@@ -66,7 +67,7 @@ router.get("/register", async (req, res) => {
       user: newUser.getInstance(),
       address: newAddress.getInstance(),
     });
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     if (err.errno === 1062) {
       res.status(400).json({ message: "Duomenys neunikalūs" });
@@ -145,11 +146,11 @@ router.put("/:id", async (req, res) => {
 router.get("/logout", async (req, res) => {
   if (req.session.isLoggedIn) {
     req.session.destroy();
-    return res.status(200).json({ message: "Sėkmingai buvote atjungtas" });
+    return res.status(200).json({ message: "Sėkmingai atsijungėte" });
   } else {
     return res
       .status(200)
-      .json({ message: "Tam kad atsijungti, turite prisijungti" });
+      .json({ message: "Tam kad atsijungtumėtę, turite prisijungti" });
   }
 }); //reik mygtuko reacte - main.jsx
 
