@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAllCountries } from "/utils/api/countriesApi";
+import { register } from "/utils/api/registerService";
+import { checkSession } from "../../utils/api/checkSession";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistrationWindow() {
   const [userDetails, setUserDetails] = useState({
@@ -11,11 +14,21 @@ export default function RegistrationWindow() {
   });
 
   const [countries, setCountries] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     getAllCountries((data) => {
-      console.log(data);
+      setCountries(data);
+    });
+    checkSession((data) => {
+      if (data.isLoggedIn) {
+        navigate("/");
+      } else console.log("Vartotojas neprisijungęs");
     });
   });
+
+  const sortedCountries = useMemo(() => {
+    return countries.sort((a, b) => a.country.localeCompare(b.country));
+  }, [countries]);
 
   const [addressDetails, setAddressDetails] = useState({
     country: "",
@@ -48,6 +61,12 @@ export default function RegistrationWindow() {
     }
   }
 
+  function sendRegistrationDetails() {
+    const registrationDetails = { ...userDetails, ...addressDetails };
+    register(registrationDetails);
+    console.log(registrationDetails);
+  }
+
   return (
     <div className="bg-slate-300 w-[100vw] h-[100vh] flex justify-center items-center auth-bg">
       <div className="w-4/5 min-h-[400px] max-w-[1000px] bg-gray-500 bg-opacity-80 p-4 rounded-md">
@@ -60,9 +79,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Username</span>
               <input
                 value={userDetails.username}
-                onChange={(e) => {
-                  setFieldInUserDetails(e, "username");
-                }}
+                onChange={(e) => setFieldInUserDetails(e, "username")}
                 type="text"
                 placeholder="Enter your username"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -74,9 +91,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Password</span>
               <input
                 value={userDetails.password}
-                onChange={(e) => {
-                  setFieldInUserDetails(e, "password");
-                }}
+                onChange={(e) => setFieldInUserDetails(e, "password")}
                 type="password"
                 placeholder="Enter your password"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -88,9 +103,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Email</span>
               <input
                 value={userDetails.email}
-                onChange={(e) => {
-                  setFieldInUserDetails(e, "email");
-                }}
+                onChange={(e) => setFieldInUserDetails(e, "email")}
                 type="email"
                 placeholder="Enter your email address"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -102,9 +115,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Birth date</span>
               <input
                 value={userDetails.birthDate}
-                onChange={(e) => {
-                  setFieldInUserDetails(e, "birthDate");
-                }}
+                onChange={(e) => setFieldInUserDetails(e, "birthDate")}
                 type="date"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -115,9 +126,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Phone</span>
               <input
                 value={userDetails.phone}
-                onChange={(e) => {
-                  setFieldInUserDetails(e, "phone");
-                }}
+                onChange={(e) => setFieldInUserDetails(e, "phone")}
                 type="number"
                 placeholder="Enter your phone number"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -134,13 +143,13 @@ export default function RegistrationWindow() {
               <select
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
                 value={addressDetails.country}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "country");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "country")}
               >
-                <option>Lithuania</option>
-                <option>Latvia</option>
-                <option>Estonia</option>
+                {sortedCountries.map((country) => (
+                  <option key={`country-${country.id}`}>
+                    {country.country}
+                  </option>
+                ))}
               </select>
               {/* <input
                 type="text"
@@ -156,9 +165,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.county}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "county");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "county")}
                 placeholder="Enter your county"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -171,9 +178,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.municipality}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "municipality");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "municipality")}
                 placeholder="Enter your municipality"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -186,9 +191,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.postalCode}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "postalCode");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "postalCode")}
                 placeholder="Enter your postal code"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -201,9 +204,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.city}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "city");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "city")}
                 placeholder="Enter your city"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -216,9 +217,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.street}
-                onChange={(e) => {
-                  setFieldInAddressDetails(e, "street");
-                }}
+                onChange={(e) => setFieldInAddressDetails(e, "street")}
                 placeholder="Enter your street"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -231,9 +230,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.streetNumber}
-                onChange={(e) => {
-                  setNumberField(e, "streetNumber", 400);
-                }}
+                onChange={(e) => setNumberField(e, "streetNumber", 400)}
                 placeholder="Street number"
                 className="outline-none border w-1/5 px-2 py-1 rounded-lg"
               />
@@ -241,9 +238,7 @@ export default function RegistrationWindow() {
               <input
                 type="text"
                 value={addressDetails.apartmentNumber}
-                onChange={(e) => {
-                  setNumberField(e, "apartmentNumber", 400);
-                }}
+                onChange={(e) => setNumberField(e, "apartmentNumber", 400)}
                 placeholder="Apartment number"
                 className="outline-none border w-2/5 px-2 py-1 rounded-lg"
               />
@@ -257,7 +252,10 @@ export default function RegistrationWindow() {
             </label>
           </div>
 
-          <button className="border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4">
+          <button
+            className="border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4"
+            onClick={sendRegistrationDetails}
+          >
             Register
           </button>
         </form>
