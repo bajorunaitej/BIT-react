@@ -1,4 +1,21 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { checkSession } from "/utils/api/checkSession";
+
 export default function LoginPage() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    checkSession((data) => {
+      //registration
+      if (data.isLoggedIn) {
+        navigate("/");
+      } else {
+        navigate("/login");
+        console.log("Vartotojas neprisijungęs");
+      }
+    });
+  }, [navigate]);
+
   return (
     <div className="bg-slate-300 w-[100vw] h-[100vh] flex justify-center items-center auth-bg">
       <div className="w-4/5 min-h-[400px] max-w-[1000px] bg-gray-500 bg-opacity-80 p-4 rounded-md">

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllCountries } from "/utils/api/countriesApi";
 import { register } from "/utils/api/registerService";
-import { checkSession } from "../../utils/api/checkSession";
+import { checkSession } from "/utils/api/checkSession";
 import { useNavigate } from "react-router-dom";
 
 export default function RegistrationWindow() {

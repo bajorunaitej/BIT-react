@@ -1,3 +1,7 @@
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { checkSession } from "/utils/api/checkSession";
+
 function AuthButtons() {
   return (
     <div>
@@ -86,6 +90,18 @@ function PcPost() {
 
 export default function Main() {
   const isLoggedIn = false;
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    checkSession((data) => {
+      //registration
+      if (!data.isLoggedIn) {
+        navigate("/login");
+      } else {
+        navigate("/");
+      }
+    });
+  }, [navigate]);
 
   return (
     <div className="flex justify-center items-center">
