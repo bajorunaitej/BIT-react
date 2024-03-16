@@ -141,6 +141,30 @@ router.put("/:id", async (req, res) => {
 });
 
 //login route
+
+router.post("/login", async (req, res) => {
+  const { username, pass_encoded } = req.body;
+
+  if (!username || !pass_encoded) {
+    return res
+      .status(400)
+      .json({ message: "Pridžsijungimo vardas or slaptažodis yra privalomi" });
+  }
+
+  const user = await UserModel.findOne(
+    (u) => u.username === username && u.pass_encoded === pass_encoded
+  );
+  if (!user) {
+    return res
+      .status(401)
+      .json({ message: "Neteisingas prisijungimo vardas arba slaptažodis" });
+  }
+
+  req.session.isLoggedIn = true;
+  req.session.user === user;
+  res.status(200).json({ message: "Prisijungimas sėkmingas", user: user });
+});
+
 //logout route
 
 router.get("/logout", async (req, res) => {
