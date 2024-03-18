@@ -3,6 +3,7 @@ const router = express.Router();
 const UserModel = require("../model/UserModel");
 const AddresModel = require("../model/AddressModel");
 const security = require("../utils/security");
+let currentAddressId;
 
 // lochalhost:3000/api/user/register
 
@@ -37,6 +38,7 @@ router.post("/register", async (req, res) => {
 
     await newAddress.save();
     console.log(newAddress.getInstance());
+    currentAddressId = newAddress.id;
 
     const salt = security.generateSalt();
     const hashedPassword = security.hashPassword(password, salt);
@@ -69,6 +71,7 @@ router.post("/register", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    AddresModel.deleteById(currentAddressId);
     if (err.errno === 1062) {
       res.status(400).json({ message: "Duomenys neunikalūs" });
     } else {
@@ -141,42 +144,66 @@ router.put("/:id", async (req, res) => {
 });
 
 //login route
-
 router.post("/login", async (req, res) => {
-  const { username, pass_encoded } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  if (!username || !pass_encoded) {
-    return res
-      .status(400)
-      .json({ message: "Pridžsijungimo vardas or slaptažodis yra privalomi" });
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Prisijungimo vardas or slaptažodis yra privalomi",
+        status: false,
+      });
+    }
+
+    const existingUser = await UserModel.findByUsername(username);
+
+    if (!existingUser) {
+      return res
+        .status(401)
+        .json({ message: "Toks vartotojas nerastas", status: false });
+    }
+
+    if (
+      !security.isValidPassword(
+        password,
+        existingUser.salt,
+        existingUser.pass_encoded
+      )
+    )
+      return res
+        .status(400)
+        .json({ message: "Prisijungimo duomeny yra netinkami", status: false });
+
+    req.session.user = {
+      username: existingUser.username,
+      email: existingUser.email,
+      id: existingUser.id,
+    };
+
+    req.session.isLoggedIn = true;
+    res
+      .status(200)
+      .json({ message: "sekmingai prisijungete prie sistemos", status: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Vidine serverio klaida.", status: false });
   }
-
-  const user = await UserModel.findOne(
-    (u) => u.username === username && u.pass_encoded === pass_encoded
-  );
-  if (!user) {
-    return res
-      .status(401)
-      .json({ message: "Neteisingas prisijungimo vardas arba slaptažodis" });
-  }
-
-  req.session.isLoggedIn = true;
-  req.session.user === user;
-  res.status(200).json({ message: "Prisijungimas sėkmingas", user: user });
 });
 
 //logout route
-
 router.get("/logout", async (req, res) => {
   if (req.session.isLoggedIn) {
     req.session.destroy();
-    return res.status(200).json({ message: "Sėkmingai atsijungėte" });
-  } else {
     return res
       .status(200)
-      .json({ message: "Tam kad atsijungtumėtę, turite prisijungti" });
+      .json({ message: "Sėkmingai atsijungėte", status: true });
+  } else {
+    return res.status(200).json({
+      message: "Tam kad atsijungtumėtę, turite prisijungti",
+      status: false,
+    });
   }
-}); //reik mygtuko reacte - main.jsx
+});
 
 router.get("/check-session", (req, res) => {
   if (req.session.isLoggedIn)
