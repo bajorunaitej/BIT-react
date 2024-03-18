@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
     });
 
     await newAddress.save();
-    console.log(newAddress.getInstance());
+    // console.log(newAddress.getInstance());
     currentAddressId = newAddress.id;
 
     const salt = security.generateSalt();
@@ -150,7 +150,7 @@ router.post("/login", async (req, res) => {
 
     if (!username || !password) {
       return res.status(400).json({
-        message: "Prisijungimo vardas or slaptažodis yra privalomi",
+        message: "Prisijungimo vardas ir slaptažodis yra privalomi",
         status: false,
       });
     }
@@ -170,9 +170,10 @@ router.post("/login", async (req, res) => {
         existingUser.pass_encoded
       )
     )
-      return res
-        .status(400)
-        .json({ message: "Prisijungimo duomeny yra netinkami", status: false });
+      return res.status(400).json({
+        message: "Prisijungimo duomenys yra netinkami",
+        status: false,
+      });
 
     req.session.user = {
       username: existingUser.username,
@@ -183,10 +184,10 @@ router.post("/login", async (req, res) => {
     req.session.isLoggedIn = true;
     res
       .status(200)
-      .json({ message: "sekmingai prisijungete prie sistemos", status: true });
+      .json({ message: "Sėkmingai prisijungėte prie sistemos", status: true });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Vidine serverio klaida.", status: false });
+    res.status(500).json({ message: "Vidinė serverio klaida.", status: false });
   }
 });
 
