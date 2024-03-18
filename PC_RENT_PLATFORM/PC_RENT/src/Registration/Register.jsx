@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllCountries } from "/utils/api/countriesApi";
 import { register } from "/utils/api/registerService";
-import { checkSession } from "/utils/api/checkSession";
-import { useNavigate } from "react-router-dom";
+import { checkSession } from "/utils/api/sessions";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function RegistrationWindow() {
   const [userDetails, setUserDetails] = useState({
@@ -25,6 +25,7 @@ export default function RegistrationWindow() {
   });
 
   const [countries, setCountries] = useState([]);
+
   const navigate = useNavigate();
   useEffect(() => {
     getAllCountries((data) => setCountries(data));
@@ -296,6 +297,13 @@ export default function RegistrationWindow() {
               <span className="ml-2">Agree to Terms and Conditions </span>
             </label>
           </div>
+
+          <Link
+            to="/login"
+            className="block text-blue-600 hover:text-blue-700 hover:underline "
+          >
+            Already have an account?
+          </Link>
 
           <button
             className="border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4"

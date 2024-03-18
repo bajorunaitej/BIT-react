@@ -1,22 +1,22 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { checkSession } from "/utils/api/checkSession";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { checkSession, logout } from "/utils/api/sessions";
 
 function AuthButtons() {
   return (
     <div>
-      <a
-        href="/registration"
+      <Link
+        to="/registration"
         className="px-4 py-1 border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
       >
         Register now
-      </a>
-      <a
-        href="/login"
+      </Link>
+      <Link
+        to="/login"
         className="px-4 py-1 border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 text-white rounded mx-2"
       >
         Log in
-      </a>
+      </Link>
     </div>
   );
 }
@@ -89,31 +89,43 @@ function PcPost() {
 }
 
 export default function Main() {
-  const isLoggedIn = false;
+  // const isLoggedIn = true;
 
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     checkSession((data) => {
-      //registration
-      if (!data.isLoggedIn) {
-        navigate("/login");
-      } else {
-        navigate("/");
-      }
+      setIsLoggedIn(data.isLoggedIn);
     });
   }, [navigate]);
+
+  function logOut() {
+    logout((response) => {
+      if (response.status) {
+        setIsLoggedIn(false);
+      }
+    });
+  }
 
   return (
     <div className="flex justify-center items-center">
       <div className="container w-[80%] bg-gray-500 min-h-[90vh] rounded-lg p-6">
         {!isLoggedIn && <AuthButtons />}
         {isLoggedIn && (
-          <a
-            href="/add-new-post"
-            className="px-4 py-1 bg-violet-500 hover:bg-violet-700 text-white rounded mx-2"
-          >
-            Add rent
-          </a>
+          <div className="flex justify-between">
+            <Link
+              to="/add-new-post"
+              className="px-4 py-1 bg-violet-500 hover:bg-violet-700 text-white rounded mx-2"
+            >
+              Add rent
+            </Link>
+            <button
+              className="px-4 py-1 bg-blue-500 hover:bg-blue-700 text-white rounded mx-2"
+              onClick={logOut}
+            >
+              Logout
+            </button>
+          </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           <PcPost />
