@@ -1,17 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { checkSession } from "/utils/api/sessions";
 import { login } from "/utils/api/loginService";
 
 export default function LoginPage() {
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     checkSession((data) => {
-      //registration
       if (data.isLoggedIn) {
         navigate("/");
       } else {
-        navigate("/login");
         console.log("Vartotojas neprisijungęs");
       }
     });
@@ -20,7 +20,11 @@ export default function LoginPage() {
   function logIn(e) {
     e.preventDefault();
     // console.log(loginInfo.current);
-    login(loginInfo.current);
+    login(loginInfo.current, (resp) => {
+      setMessage(resp.message);
+      if (resp.status) navigate("/");
+      console.log(resp);
+    });
   }
 
   //useRef↓
@@ -35,6 +39,7 @@ export default function LoginPage() {
       <div className="w-4/5 min-h-[400px] max-w-[1000px] bg-gray-500 bg-opacity-80 p-4 rounded-md">
         <h1 className="text-xl font-bold">Login form</h1>
         <hr className="mb-20" />
+        <p className="text-red-800 font-semibold">{message}</p>
         <form>
           <div className="mb-2">
             <label>
@@ -64,7 +69,7 @@ export default function LoginPage() {
           </div>
           <Link
             to="/registration"
-            className="block text-blue-600 hover:text-blue-700 hover:underline "
+            className="block text-slate-900 hover:text-slate-700 hover:underline "
           >
             Still dont have an account?
           </Link>

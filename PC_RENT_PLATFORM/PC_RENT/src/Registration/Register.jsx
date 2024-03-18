@@ -1,11 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { getAllCountries } from "/utils/api/countriesApi";
-import { register } from "/utils/api/registerService";
+import { register } from "../../utils/api/registerService";
 import { checkSession } from "/utils/api/sessions";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function RegistrationWindow() {
-  const [userDetails, setUserDetails] = useState({
+  // const [userDetails, setUserDetails] = useState({
+  //   username: "",
+  //   password: "",
+  //   email: "",
+  //   birth_date: "",
+  //   phone: "",
+  // });
+  const userInfo = useRef({
     username: "",
     password: "",
     email: "",
@@ -13,7 +20,18 @@ export default function RegistrationWindow() {
     phone: "",
   });
 
-  const [addressDetails, setAddressDetails] = useState({
+  // const [addressDetails, setAddressDetails] = useState({
+  //   country: "",
+  //   county: "",
+  //   municipality: "",
+  //   zipCode: "",
+  //   city: "",
+  //   street: "",
+  //   streetNumber: "",
+  //   apartmentNumber: "",
+  // });
+
+  const addressInfo = useRef({
     country: "",
     county: "",
     municipality: "",
@@ -24,14 +42,17 @@ export default function RegistrationWindow() {
     apartmentNumber: "",
   });
 
-  const [countries, setCountries] = useState([]);
+  // const [countries, setCountries] = useState([]);
+  const countriesInfo = useRef([]);
 
   const navigate = useNavigate();
   useEffect(() => {
-    getAllCountries((data) => setCountries(data));
+    getAllCountries((data) => {
+      // setCountries(data);
+      countriesInfo.current = data;
+    });
 
     checkSession((data) => {
-      //registration
       if (data.isLoggedIn) {
         navigate("/");
       } else {
@@ -40,14 +61,21 @@ export default function RegistrationWindow() {
     });
   }, [navigate]);
 
+  // const sortedCountries = useMemo(() => {
+  //   return countries.sort((a, b) => a.country.localeCompare(b.country));
+  // }, [countries]);
   const sortedCountries = useMemo(() => {
-    return countries.sort((a, b) => a.country.localeCompare(b.country));
-  }, [countries]);
+    return countriesInfo.current.sort((a, b) =>
+      a.country.localeCompare(b.country)
+    );
+  }, [countriesInfo]);
 
   function setFieldInUserDetails(e, field) {
-    const newObject = { ...userDetails };
+    // const newObject = { ...userDetails };
+    const newObject = { ...userInfo.current };
     newObject[field] = e.target.value;
-    setUserDetails(newObject);
+    // setUserDetails(newObject);
+    userInfo.current = newObject;
   }
 
   // function setFieldInAddressDetails(e, field) {
@@ -65,7 +93,8 @@ export default function RegistrationWindow() {
   // }
 
   function sendRegistrationDetails() {
-    const registrationDetails = { ...userDetails, ...addressDetails };
+    // const registrationDetails = { ...userDetails, ...addressDetails };
+    const registrationDetails = { ...userInfo.current, ...addressInfo.current };
     register(registrationDetails);
     console.log(registrationDetails);
   }
@@ -81,7 +110,7 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Username</span>
               <input
-                value={userDetails.username}
+                value={userInfo.current.username}
                 onChange={(e) => setFieldInUserDetails(e, "username")}
                 type="text"
                 placeholder="Enter your username"
@@ -93,7 +122,7 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Password</span>
               <input
-                value={userDetails.password}
+                value={userInfo.current.password}
                 onChange={(e) => setFieldInUserDetails(e, "password")}
                 type="password"
                 placeholder="Enter your password"
@@ -105,7 +134,7 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Email</span>
               <input
-                value={userDetails.email}
+                value={userInfo.current.email}
                 onChange={(e) => setFieldInUserDetails(e, "email")}
                 type="email"
                 placeholder="Enter your email address"
@@ -118,7 +147,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Birth date</span>
               <input
                 type="date"
-                value={userDetails.birth_date}
+                value={userInfo.current.birth_date}
                 onChange={(e) => setFieldInUserDetails(e, "birth_date")}
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -129,7 +158,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Phone</span>
               <input
                 type="number"
-                value={userDetails.phone}
+                value={userInfo.current.phone}
                 onChange={(e) => setFieldInUserDetails(e, "phone")}
                 placeholder="Enter your phone number"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -145,13 +174,14 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Country</span>
               <select
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
-                value={addressDetails.country}
-                onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    country: e.target.value,
-                  })
-                }
+                value={addressInfo.current.country}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     country: e.target.value,
+                //   })
+                // }
+                onChange={(e) => (addressInfo.current.country = e.target.value)}
               >
                 {sortedCountries.map((country) => (
                   <option key={`country-${country.id}`}>
@@ -175,13 +205,14 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">County</span>
               <input
                 type="text"
-                value={addressDetails.county}
-                onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    county: e.target.value,
-                  })
-                }
+                value={addressInfo.current.county}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     county: e.target.value,
+                //   })
+                // }
+                onChange={(e) => (addressInfo.current.county = e.target.value)}
                 placeholder="Enter your county"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -193,12 +224,15 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Municipality</span>
               <input
                 type="text"
-                value={addressDetails.municipality}
+                value={addressInfo.current.municipality}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     municipality: e.target.value,
+                //   })
+                // }
                 onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    municipality: e.target.value,
-                  })
+                  (addressInfo.current.municipality = e.target.value)
                 }
                 placeholder="Enter your municipality"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -211,13 +245,14 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Postal code</span>
               <input
                 type="text"
-                value={addressDetails.zipCode}
-                onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    zipCode: e.target.value,
-                  })
-                }
+                value={addressInfo.current.zipCode}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     zipCode: e.target.value,
+                //   })
+                // }
+                onChange={(e) => (addressInfo.current.zipCode = e.target.value)}
                 placeholder="Enter your postal code"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -229,13 +264,14 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">City</span>
               <input
                 type="text"
-                value={addressDetails.city}
-                onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    city: e.target.value,
-                  })
-                }
+                value={addressInfo.current.city}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     city: e.target.value,
+                //   })
+                // }
+                onChange={(e) => (addressInfo.current.city = e.target.value)}
                 placeholder="Enter your city"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -247,13 +283,14 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Street</span>
               <input
                 type="text"
-                value={addressDetails.street}
-                onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    street: e.target.value,
-                  })
-                }
+                value={addressInfo.current.street}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     street: e.target.value,
+                //   })
+                // }
+                onChange={(e) => (addressInfo.current.street = e.target.value)}
                 placeholder="Enter your street"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
@@ -267,12 +304,15 @@ export default function RegistrationWindow() {
                 type="text"
                 placeholder="Street number"
                 className="outline-none border w-1/5 px-2 py-1 rounded-lg"
-                value={addressDetails.streetNumber}
+                value={addressInfo.current.streetNumber}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     streetNumber: e.target.value,
+                //   })
+                // }
                 onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    streetNumber: e.target.value,
-                  })
+                  (addressInfo.current.streetNumber = e.target.value)
                 }
               />
               <span> - </span>
@@ -280,12 +320,15 @@ export default function RegistrationWindow() {
                 type="text"
                 placeholder="Apartment number"
                 className="outline-none border w-2/5 px-2 py-1 rounded-md"
-                value={addressDetails.apartmentNumber}
+                value={addressInfo.current.apartmentNumber}
+                // onChange={(e) =>
+                //   setAddressDetails({
+                //     ...addressDetails,
+                //     apartmentNumber: e.target.value,
+                //   })
+                // }
                 onChange={(e) =>
-                  setAddressDetails({
-                    ...addressDetails,
-                    apartmentNumber: e.target.value,
-                  })
+                  (addressInfo.current.apartmentNumber = e.target.value)
                 }
               />
             </label>
@@ -300,7 +343,7 @@ export default function RegistrationWindow() {
 
           <Link
             to="/login"
-            className="block text-blue-600 hover:text-blue-700 hover:underline "
+            className="block text-slate-700 hover:text-blue-900 hover:underline "
           >
             Already have an account?
           </Link>

@@ -93,6 +93,7 @@ export default function Main() {
 
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     checkSession((data) => {
       setIsLoggedIn(data.isLoggedIn);
@@ -114,7 +115,7 @@ export default function Main() {
         {isLoggedIn && (
           <div className="flex justify-between">
             <Link
-              to="/add-new-post"
+              to="/add-new-pc"
               className="px-4 py-1 bg-violet-500 hover:bg-violet-700 text-white rounded mx-2"
             >
               Add rent
