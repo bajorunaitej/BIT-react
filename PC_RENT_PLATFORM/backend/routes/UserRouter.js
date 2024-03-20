@@ -54,8 +54,7 @@ router.post("/register", async (req, res) => {
     });
 
     await newUser.save();
-    console.log(newUser);
-
+    // console.log(newUser);
     //3. Užregistruoti vartotojo sesiją
     req.session.user = {
       username: newUser.username,
@@ -65,17 +64,22 @@ router.post("/register", async (req, res) => {
 
     req.session.isLoggedIn = true;
 
+    currentAddressId = undefined;
     res.status(201).send({
       user: newUser.getInstance(),
       address: newAddress.getInstance(),
+      status: true,
     });
   } catch (err) {
     console.log(err);
-    AddresModel.deleteById(currentAddressId);
+    if (currentAddressId) {
+      await AddresModel.deleteById(currentAddressId);
+      currentAddressId = undefined;
+    }
     if (err.errno === 1062) {
-      res.status(400).json({ message: "Duomenys neunikalūs" });
+      res.status(400).json({ message: "Duomenys neunikalūs", status: false });
     } else {
-      res.status(500).json({ message: "Serverio klaida" });
+      res.status(500).json({ message: "Serverio klaida", status: false });
     }
   }
 });
@@ -97,9 +101,12 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     if (error.errno === 1062) {
-      res.status(400).send("Įterpimas negalimas, toks įrašas jau yra.");
+      res.status(400).send({
+        message: "Įterpimas negalimas, toks įrašas jau yra.",
+        status: false,
+      });
     } else {
-      res.status(500).send("Serverio klaida");
+      res.status(500).send({ message: "Serverio klaida", status: false });
     }
   }
 });
