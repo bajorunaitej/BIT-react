@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllCountries } from "/utils/api/countriesApi";
 import { register } from "../../utils/api/registerService";
 import { checkSession } from "/utils/api/sessions";
@@ -42,14 +42,12 @@ export default function RegistrationWindow() {
     apartmentNumber: "",
   });
 
-  // const [countries, setCountries] = useState([]);
-  const countriesInfo = useRef([]);
+  const [countries, setCountries] = useState([]);
 
   const navigate = useNavigate();
   useEffect(() => {
     getAllCountries((data) => {
-      // setCountries(data);
-      countriesInfo.current = data;
+      setCountries(data);
     });
 
     checkSession((data) => {
@@ -61,14 +59,16 @@ export default function RegistrationWindow() {
     });
   }, [navigate]);
 
-  // const sortedCountries = useMemo(() => {
-  //   return countries.sort((a, b) => a.country.localeCompare(b.country));
-  // }, [countries]);
+  const checkBoxInputRef = useRef(null);
+
   const sortedCountries = useMemo(() => {
-    return countriesInfo.current.sort((a, b) =>
-      a.country.localeCompare(b.country)
-    );
-  }, [countriesInfo]);
+    return countries.sort((a, b) => a.country.localeCompare(b.country));
+  }, [countries]);
+  // const sortedCountries = useMemo(() => {
+  //   return countriesInfo.current.sort((a, b) =>
+  //     a.country.localeCompare(b.country)
+  //   );
+  // }, [countriesInfo]);
 
   function setFieldInUserDetails(e, field) {
     // const newObject = { ...userDetails };
@@ -92,11 +92,18 @@ export default function RegistrationWindow() {
   //   }
   // }
 
-  function sendRegistrationDetails() {
+  function sendRegistrationDetails(e) {
+    e.preventDefault();
+    if (!checkBoxInputRef.current.checked) {
+      return alert("Must agree to the rules!!!");
+    }
     // const registrationDetails = { ...userDetails, ...addressDetails };
     const registrationDetails = { ...userInfo.current, ...addressInfo.current };
-    register(registrationDetails);
-    console.log(registrationDetails);
+    register(registrationDetails, (resp) => {
+      if (resp.status) navigate("/");
+      else alert(resp.message);
+    });
+    // console.log(registrationDetails);
   }
 
   return (
@@ -110,8 +117,11 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Username</span>
               <input
-                value={userInfo.current.username}
+                // value={userInfo.current.username}
                 onChange={(e) => setFieldInUserDetails(e, "username")}
+                // onChange={(e) => {
+                //   userInfo.current.username = e.target.value;
+                // }}
                 type="text"
                 placeholder="Enter your username"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -122,7 +132,7 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Password</span>
               <input
-                value={userInfo.current.password}
+                // value={userInfo.current.password}
                 onChange={(e) => setFieldInUserDetails(e, "password")}
                 type="password"
                 placeholder="Enter your password"
@@ -134,7 +144,7 @@ export default function RegistrationWindow() {
             <label>
               <span className="w-1/5 inline-block">Email</span>
               <input
-                value={userInfo.current.email}
+                // value={userInfo.current.email}
                 onChange={(e) => setFieldInUserDetails(e, "email")}
                 type="email"
                 placeholder="Enter your email address"
@@ -147,8 +157,11 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Birth date</span>
               <input
                 type="date"
-                value={userInfo.current.birth_date}
+                // value={userInfo.current.birth_date}
                 onChange={(e) => setFieldInUserDetails(e, "birth_date")}
+                // onChange={(e) => {
+                //   userInfo.current.username = e.target.value;
+                // }}
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
             </label>
@@ -158,7 +171,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Phone</span>
               <input
                 type="number"
-                value={userInfo.current.phone}
+                // value={userInfo.current.phone}
                 onChange={(e) => setFieldInUserDetails(e, "phone")}
                 placeholder="Enter your phone number"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
@@ -174,7 +187,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Country</span>
               <select
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
-                value={addressInfo.current.country}
+                // value={addressInfo.current.country}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -205,7 +218,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">County</span>
               <input
                 type="text"
-                value={addressInfo.current.county}
+                // value={addressInfo.current.county}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -224,7 +237,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Municipality</span>
               <input
                 type="text"
-                value={addressInfo.current.municipality}
+                // value={addressInfo.current.municipality}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -245,7 +258,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Postal code</span>
               <input
                 type="text"
-                value={addressInfo.current.zipCode}
+                // value={addressInfo.current.zipCode}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -264,7 +277,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">City</span>
               <input
                 type="text"
-                value={addressInfo.current.city}
+                // value={addressInfo.current.city}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -283,7 +296,7 @@ export default function RegistrationWindow() {
               <span className="w-1/5 inline-block">Street</span>
               <input
                 type="text"
-                value={addressInfo.current.street}
+                // value={addressInfo.current.street}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -304,7 +317,7 @@ export default function RegistrationWindow() {
                 type="text"
                 placeholder="Street number"
                 className="outline-none border w-1/5 px-2 py-1 rounded-lg"
-                value={addressInfo.current.streetNumber}
+                // value={addressInfo.current.streetNumber}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -320,7 +333,7 @@ export default function RegistrationWindow() {
                 type="text"
                 placeholder="Apartment number"
                 className="outline-none border w-2/5 px-2 py-1 rounded-md"
-                value={addressInfo.current.apartmentNumber}
+                // value={addressInfo.current.apartmentNumber}
                 // onChange={(e) =>
                 //   setAddressDetails({
                 //     ...addressDetails,
@@ -336,7 +349,7 @@ export default function RegistrationWindow() {
 
           <div>
             <label>
-              <input type="checkbox" required />
+              <input type="checkbox" ref={checkBoxInputRef} />
               <span className="ml-2">Agree to Terms and Conditions </span>
             </label>
           </div>
@@ -350,7 +363,7 @@ export default function RegistrationWindow() {
 
           <button
             className="border-2 border-gray-700 bg-indigo-400 hover:bg-indigo-800 rounded text-white px-6 py-1 mt-4"
-            onClick={sendRegistrationDetails}
+            onClick={(e) => sendRegistrationDetails(e)}
           >
             Register
           </button>

@@ -97,6 +97,7 @@ export default function Main() {
   useEffect(() => {
     checkSession((data) => {
       setIsLoggedIn(data.isLoggedIn);
+      console.log(isLoggedIn);
     });
   }, [navigate]);
 
