@@ -17,6 +17,26 @@ export default function AddPcForm() {
         gpuInputRef.current.focus();
       }
     });
+    gpuInputRef.current.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        ramTypeInputRef.current.focus();
+      }
+    });
+    ramTypeInputRef.current.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        ramSpeedInputRef.current.focus();
+      }
+    });
+    ramSpeedInputRef.current.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        ramAmountInputRef.current.focus();
+      }
+    });
+    ramAmountInputRef.current.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        computerTypeInputRef.current.focus();
+      }
+    });
   }, []);
 
   // 2. Budas susisrinkti informacija iš ivesties laukeliu
