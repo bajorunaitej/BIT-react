@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkSession, logout } from "/utils/api/sessions";
+import { getAllPcs } from "../../utils/api/pcService";
 
 function AuthButtons() {
   return (
@@ -21,7 +22,7 @@ function AuthButtons() {
   );
 }
 
-function PcPost() {
+function PcPost({ pc }) {
   return (
     <div className="flex justify-center items-center">
       <div className="bg-white min-h-[300px] min-w-[100px] max-[250px]">
@@ -90,14 +91,16 @@ function PcPost() {
 
 export default function Main() {
   // const isLoggedIn = true;
-
+  const [pcList, setPcList] = useState([]);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     checkSession((data) => {
       setIsLoggedIn(data.isLoggedIn);
-      console.log(isLoggedIn);
+    });
+    getAllPcs((allPcs) => {
+      setPcList(allPcs);
     });
   }, [navigate]);
 
@@ -130,6 +133,10 @@ export default function Main() {
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {pcList.map((pc) => (
+            <PcPost pc={pc} key={pc.id} />
+          ))}
+          {/* <PcPost />
           <PcPost />
           <PcPost />
           <PcPost />
@@ -144,8 +151,7 @@ export default function Main() {
           <PcPost />
           <PcPost />
           <PcPost />
-          <PcPost />
-          <PcPost />
+          <PcPost /> */}
         </div>
       </div>
     </div>
