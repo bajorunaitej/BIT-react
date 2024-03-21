@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const PcModel = require("../model/PcModel");
 
+// /server/api/pc/
+
 // router.get("/", (req, res) => {
 //   res.send("Veikia pc routeris");
 // });
@@ -11,10 +13,10 @@ const PcModel = require("../model/PcModel");
 
 router.post("/", async (req, res) => {
   try {
-    const { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pcType } =
-      req.body;
+    const { cpu, gpu, ramType, ramSpeed, ramAmount, pcType } = req.body;
+    res.status(200).json({ message: "info priimta" });
     const newPc = new PcModel({
-      ownerId,
+      ownerId: req.session.user.id,
       cpu,
       gpu,
       ramType,
@@ -23,13 +25,22 @@ router.post("/", async (req, res) => {
       pcType,
     });
     await newPc.save();
-    res.send(newPc.getInstance());
+    res.send(201).json({
+      message: "Info sėkmingai išsiųsta",
+      newPc: newPc.getInstance(),
+      status: true,
+    });
   } catch (err) {
     console.error(err);
     if (err.errno === 1062) {
-      res.status(400).send("Įterpimas negalimas, toks įrašas jau yra.");
+      res
+        .status(400)
+        .json({
+          message: "Įterpimas negalimas, toks įrašas jau yra.",
+          status: false,
+        });
     } else {
-      res.status(500).send("Serverio klaida");
+      res.status(500).json({ message: "Serverio klaida", status: false });
     }
   }
 });
@@ -61,7 +72,7 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pcType } = req.body;
   const pcObj = await PcModel.findById(req.params.id);
-  if (ownerId) pcObj.ownerId = ownerId;
+  // if (ownerId) pcObj.ownerId = ownerId;
   if (cpu) pcObj.cpu = cpu;
   if (gpu) pcObj.gpu = gpu;
   if (ramType) pcObj.ramType = ramType;
