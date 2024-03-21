@@ -5,7 +5,7 @@ const AddresModel = require("../model/AddressModel");
 const security = require("../utils/security");
 let currentAddressId;
 
-// lochalhost:3000/api/user/register
+// lochalhost/server/api/user/register
 
 router.post("/register", async (req, res) => {
   try {
@@ -155,18 +155,17 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    if (!username || !password) {
+    if (!username || !password)
       return res.status(400).json({
         message: "Prisijungimo vardas ir slaptažodis yra privalomi",
         status: false,
       });
-    }
 
     const existingUser = await UserModel.findByUsername(username);
 
     if (!existingUser) {
       return res
-        .status(401)
+        .status(404)
         .json({ message: "Toks vartotojas nerastas", status: false });
     }
 
