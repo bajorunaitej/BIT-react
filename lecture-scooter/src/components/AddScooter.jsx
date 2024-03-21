@@ -1,7 +1,9 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useContext, useState } from "react";
 import Button from "./Button";
+import KoltContext from "../contexts/KoltContext";
 
-export default function AddScooterForm({ notifyScooterAddition }) {
+export default function AddScooterForm() {
   //   const [scooterName, setScooterName] = useState("");
   //   const [ride, setRide] = useState(0);
   //   const [nationalNumber, setNationalNumber] = useState("");
@@ -13,6 +15,8 @@ export default function AddScooterForm({ notifyScooterAddition }) {
     registrationCode: "",
     hourlyPrice: 0,
   });
+
+  const { newScooter, setNewScooter } = useContext(KoltContext);
 
   const handleRideChange = (e) => {
     const newValue = +e.target.value;
@@ -49,7 +53,7 @@ export default function AddScooterForm({ notifyScooterAddition }) {
     //   alert("Kaina privalo būti nuo 0 € iki 100 €");
     //   return;
     // }
-    notifyScooterAddition(scooter);
+    setNewScooter(scooter);
   };
 
   return (

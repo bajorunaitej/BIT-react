@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
+import KoltContext from "../contexts/KoltContext";
 
 function Status({ status, onClick }) {
   return (
@@ -60,10 +61,11 @@ function Scooter({ scooter, deleteFunc, updateFunc }) {
   );
 }
 
-export default function Middle({ newScooter, resetInput }) {
+export default function Middle() {
   const [scooter, setScooter] = useState(getAllScooters);
   const [showFreeScooters, setShowFreeScooters] = useState(null);
   const [selectedRideSort, setSelectedRideSort] = useState(1);
+  const { newScooter, setNewScooter } = useContext(KoltContext);
 
   useEffect(() => {
     saveScooter();
@@ -90,7 +92,7 @@ export default function Middle({ newScooter, resetInput }) {
       setScooter([...scooter, newScooterAddition]);
       const nextId = newId + 1 === 1 ? 2 : newId + 1;
       localStorage.setItem("currentId", nextId);
-      resetInput();
+      setNewScooter(null);
     }
   }
 
