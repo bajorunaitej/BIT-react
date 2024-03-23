@@ -13,8 +13,9 @@ const PcModel = require("../model/PcModel");
 
 router.post("/", async (req, res) => {
   try {
-    const { cpu, gpu, ramType, ramSpeed, ramAmount, pcType } = req.body;
-    res.status(200).json({ message: "info priimta" });
+    const { cpu, gpu, ramType, ramSpeed, ramAmount, pc_type, pc_name } =
+      req.body;
+    // res.status(200).json({ message: "info priimta" });
     const newPc = new PcModel({
       ownerId: req.session.user.id,
       cpu,
@@ -22,9 +23,11 @@ router.post("/", async (req, res) => {
       ramType,
       ramSpeed,
       ramAmount,
-      pcType,
+      pc_type,
+      pc_name,
     });
     await newPc.save();
+
     res.send(201).json({
       message: "Info sėkmingai išsiųsta",
       newPc: newPc.getInstance(),
@@ -33,12 +36,10 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     if (err.errno === 1062) {
-      res
-        .status(400)
-        .json({
-          message: "Įterpimas negalimas, toks įrašas jau yra.",
-          status: false,
-        });
+      res.status(400).json({
+        message: "Įterpimas negalimas, toks įrašas jau yra.",
+        status: false,
+      });
     } else {
       res.status(500).json({ message: "Serverio klaida", status: false });
     }
@@ -46,14 +47,20 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const pc = await PcModel.findById(req.params.id);
-  res.send(pc.getInstance());
+  try {
+    const pc = await PcModel.findById(req.params.id);
+    if (!pc) {
+      return res.status(404).json({ message: "PC not found", status: false });
+    } else return res.status(200).json({ pc: pc.getInstance(), status: true });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Bad Id", status: false });
+  }
 });
 
 router.get("/", async (req, res) => {
-  const allPcsWithoutId = await PcModel.findAll();
-  const allPcs = allPcsWithoutId.map((value) => value.getInstance());
-  res.send(allPcs);
+  const allPcs = await PcModel.findAll();
+  res.status(200).json(allPcs.map((pcObj) => pcObj.getInstance()));
 });
 
 router.delete("/:id", async (req, res) => {
@@ -70,15 +77,17 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pcType } = req.body;
+  const { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pc_type, pc_name } =
+    req.body;
   const pcObj = await PcModel.findById(req.params.id);
-  // if (ownerId) pcObj.ownerId = ownerId;
+  if (ownerId) pcObj.ownerId = ownerId;
   if (cpu) pcObj.cpu = cpu;
   if (gpu) pcObj.gpu = gpu;
   if (ramType) pcObj.ramType = ramType;
   if (ramSpeed) pcObj.ramSpeed = ramSpeed;
   if (ramAmount) pcObj.ramAmount = ramAmount;
-  if (pcType) pcObj.pcType = pcType;
+  if (pc_type) pcObj.pc_type = pc_type;
+  if (pc_name) pcObj.pc_name = pc_name;
 
   await pcObj.update();
   res.send(pcObj.getInstance());

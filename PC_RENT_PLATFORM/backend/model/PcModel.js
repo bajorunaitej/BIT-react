@@ -8,10 +8,11 @@ module.exports = class Pc {
   ramType;
   ramSpeed;
   ramAmount;
-  pcType;
+  pc_type;
+  pc_name;
 
   constructor(
-    { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pcType },
+    { ownerId, cpu, gpu, ramType, ramSpeed, ramAmount, pc_type, pc_name },
     id = null
   ) {
     this.#id = id;
@@ -21,13 +22,14 @@ module.exports = class Pc {
     this.ramType = ramType;
     this.ramSpeed = ramSpeed;
     this.ramAmount = ramAmount;
-    this.pcType = pcType;
+    this.pc_type = pc_type;
+    this.pc_name = pc_name;
   }
 
   async update() {
     const result = await executeQuery(
       `UPDATE pc SET
-      ownerId = ?, cpu = ?, gpu = ?, ramType = ?, ramSpeed = ?, ramAmount = ?, pcType = ?
+      ownerId = ?, cpu = ?, gpu = ?, ramType = ?, ramSpeed = ?, ramAmount = ?, pc_type = ?, pc_name = ?
         WHERE id = ?;`,
       [
         this.ownerId,
@@ -36,7 +38,8 @@ module.exports = class Pc {
         this.ramType,
         this.ramSpeed,
         this.ramAmount,
-        this.pcType,
+        this.pc_type,
+        this.pc_name,
         this.#id,
       ]
     );
@@ -50,8 +53,8 @@ module.exports = class Pc {
 
   async save() {
     const result = await executeQuery(
-      `INSERT INTO pc (owner_id, cpu, gpu, ram_type, ram_speed, ram_amount, pc_type) 
-      VALUES (?, ?, ?, ?, ?, ?, ?);`,
+      `INSERT INTO pc (owner_id, cpu, gpu, ram_type, ram_speed, ram_amount, pc_type, pc_name) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         this.ownerId,
         this.cpu,
@@ -59,10 +62,12 @@ module.exports = class Pc {
         this.ramType,
         this.ramSpeed,
         this.ramAmount,
-        this.pcType,
+        this.pc_type,
+        this.pc_name,
       ]
     );
     this.#id = result[0].insertId;
+    return result;
   }
 
   static async findAll() {
@@ -77,12 +82,12 @@ module.exports = class Pc {
             ramType: pcObj.ram_type,
             ramSpeed: pcObj.ram_speed,
             ramAmount: pcObj.ram_amount,
-            pcType: pcObj.pc_type,
+            pc_type: pcObj.pc_type,
+            pc_name: pcObj.pc_name,
           },
           pcObj.id
         )
     );
-    return result;
   }
 
   static async findById(id) {
@@ -96,7 +101,8 @@ module.exports = class Pc {
         ramType: pc.ram_type,
         ramSpeed: pc.ram_speed,
         ramAmount: pc.ram_amount,
-        pcType: pc.pc_type,
+        pc_type: pc.pc_type,
+        pc_name: pc.pc_name,
       },
       pc.id
     );
