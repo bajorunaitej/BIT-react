@@ -6,6 +6,7 @@ export default function AddPcForm() {
   // 1. Budas susisrinkti informacija iš ivesties laukeliu
   const navigate = useNavigate();
 
+  const pcNameInputRef = useRef(null);
   const cpuInputRef = useRef(null);
   const gpuInputRef = useRef(null);
   const ramTypeInputRef = useRef(null);
@@ -14,32 +15,58 @@ export default function AddPcForm() {
   const computerTypeInputRef = useRef(null);
 
   useEffect(() => {
-    cpuInputRef.current.focus();
-    cpuInputRef.current.addEventListener("keydown", (e) => {
+    pcNameInputRef.current.focus();
+
+    const focusCPU = (e) => {
+      if (e.key === "Enter") {
+        cpuInputRef.current.focus();
+      }
+    };
+    pcNameInputRef.current.addEventListener("keydown", focusCPU);
+
+    const focusGPU = (e) => {
       if (e.key === "Enter") {
         gpuInputRef.current.focus();
       }
-    });
-    gpuInputRef.current.addEventListener("keydown", (e) => {
+    };
+    cpuInputRef.current.addEventListener("keydown", focusGPU);
+
+    const focusRamType = (e) => {
       if (e.key === "Enter") {
         ramTypeInputRef.current.focus();
       }
-    });
-    ramTypeInputRef.current.addEventListener("keydown", (e) => {
+    };
+    gpuInputRef.current.addEventListener("keydown", focusRamType);
+
+    const focusRamSpeed = (e) => {
       if (e.key === "Enter") {
         ramSpeedInputRef.current.focus();
       }
-    });
-    ramSpeedInputRef.current.addEventListener("keydown", (e) => {
+    };
+    ramTypeInputRef.current.addEventListener("keydown", focusRamSpeed);
+
+    const focusRamAmount = (e) => {
       if (e.key === "Enter") {
         ramAmountInputRef.current.focus();
       }
-    });
-    ramAmountInputRef.current.addEventListener("keydown", (e) => {
+    };
+    ramSpeedInputRef.current.addEventListener("keydown", focusRamAmount);
+
+    const focusPcType = (e) => {
       if (e.key === "Enter") {
         computerTypeInputRef.current.focus();
       }
-    });
+    };
+    ramAmountInputRef.current.addEventListener("keydown", focusPcType);
+
+    return () => {
+      pcNameInputRef.current.removeEventListener("keydown", focusCPU);
+      cpuInputRef.current.removeEventListener("keydown", focusGPU);
+      gpuInputRef.current.removeEventListener("keydown", focusRamType);
+      ramTypeInputRef.current.removeEventListener("keydown", focusRamSpeed);
+      ramSpeedInputRef.current.removeEventListener("keydown", focusRamAmount);
+      ramAmountInputRef.current.removeEventListener("keydown", focusPcType);
+    };
   }, []);
 
   // 2. Budas susisrinkti informacija iš ivesties laukeliu
@@ -54,12 +81,13 @@ export default function AddPcForm() {
     console.log("info išsiunčiama į serverį");
     // 1. Budas susisrinkti informacija iš ivesties laukeliu
     const newPcObject = {
+      pc_name: pcNameInputRef.current.value,
       cpu: cpuInputRef.current.value,
       gpu: gpuInputRef.current.value,
       ramType: ramAmountInputRef.current.value,
       ramSpeed: ramSpeedInputRef.current.value,
       ramAmount: ramAmountInputRef.current.value,
-      pcType: computerTypeInputRef.current.value,
+      pc_type: computerTypeInputRef.current.value,
     };
 
     console.log(newPcObject);
@@ -78,6 +106,20 @@ export default function AddPcForm() {
         <hr className="mb-4" />
 
         <form action="">
+          <div className="mb-2">
+            <label>
+              <span className="w-1/5 inline-block select-none">PC Name</span>
+              <input
+                ref={pcNameInputRef}
+                // onChange={(e) => {
+                //   pcData.current.cpu = e.target.value
+                // }}
+                type="text"
+                placeholder="PC Name"
+                className="outline-none border w-4/5 px-2 py-1 rounded-lg"
+              />
+            </label>
+          </div>
           <div className="mb-2">
             <label>
               <span className="w-1/5 inline-block select-none">
@@ -105,7 +147,7 @@ export default function AddPcForm() {
                 //   pcData.current.gpu = e.target.value;
                 // }}
                 type="text"
-                placeholder="Grapfics card"
+                placeholder="RAM type"
                 className="outline-none border w-4/5 px-2 py-1 rounded-lg"
               />
             </label>

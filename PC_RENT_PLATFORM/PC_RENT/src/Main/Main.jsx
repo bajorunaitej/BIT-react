@@ -2,6 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkSession, logout } from "/utils/api/sessions";
 import { getAllPcs } from "../../utils/api/pcService";
+import stationaryImage from "/src/assets/pc-images/stationary.jpg";
+import macbookImage from "/src/assets/pc-images/macbook.jpg";
+import laptopImage from "/src/assets/pc-images/laptop.jpg";
 
 function AuthButtons() {
   return (
@@ -23,64 +26,70 @@ function AuthButtons() {
 }
 
 function PcPost({ pc }) {
+  function choosePcImage(pcType) {
+    // if(pcType === "Stationary") {
+    //   return stationaryImage;
+    // }
+    switch (pcType) {
+      case "Stationary":
+        return stationaryImage;
+      case "Laptop":
+        return laptopImage;
+      case "Macbook":
+        return macbookImage;
+      default:
+        return "https://placehold.co/400x300";
+    }
+  }
+
   return (
     <div className="flex justify-center items-center">
       <div className="bg-white min-h-[300px] min-w-[100px] max-[250px]">
         <div className="img">
-          <img src="https://placehold.co/400x300" className="w-full" />
+          <img src={choosePcImage(pc.pc_type)} className="w-full" />
         </div>
         <div className="details p-4 w-fit mx-auto">
-          <a href="/pc1">
+          <a href={`/pc/${pc.id}`}>
             <h3 className="title text-xl mb-2 border-b-4 border-indigo-800 w-fit pr-4">
-              Lorem ipsum dolor sit amet.
+              {pc.pc_name}
             </h3>
           </a>
           <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
-              </span>
-              <span>Specifikacijos reikšmė</span>
+            <div className=" flex flex-wrap gap-x-4 mb-1 items-center">
+              <span className="inline-block w-1/2 font-bold">Procesorius:</span>
+              <span>{pc.cpu}</span>
             </div>
           </div>
           <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
+            <div className=" flex flex-wrap gap-x-4 mb-1 items-center">
+              <span className="inline-block w-1/2 font-bold">
+                Vaizdo plokštė:
               </span>
-              <span>Specifikacijos reikšmė</span>
+              <span>{pc.gpu}</span>
             </div>
           </div>
           <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
+            <div className=" flex flex-wrap gap-x-4 mb-1 items-center">
+              <span className="inline-block w-1/2 font-bold">
+                Operatyvioji atmintis:
               </span>
-              <span>Specifikacijos reikšmė</span>
+              <span>{pc.ramAmount} MB</span>
             </div>
           </div>
           <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
+            <div className=" flex flex-wrap gap-x-4 mb-1 items-center">
+              <span className="inline-block w-1/2 font-bold">
+                Operatyvios atminties tipas:
               </span>
-              <span>Specifikacijos reikšmė</span>
+              <span>{pc.ramType}</span>
             </div>
           </div>
           <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
+            <div className=" flex flex-wrap gap-x-4 mb-1 items-center">
+              <span className="inline-block w-1/2 font-bold">
+                Operatyvios atminties greitis:
               </span>
-              <span>Specifikacijos reikšmė</span>
-            </div>
-          </div>
-          <div className="text-xs">
-            <div className=" flex flex-wrap gap-x-4 mb-1">
-              <span className="inline-block w-1/3 font-bold">
-                Specifikacija:
-              </span>
-              <span>Specifikacijos reikšmė</span>
+              <span>{pc.ramSpeed}</span>
             </div>
           </div>
         </div>
@@ -101,6 +110,7 @@ export default function Main() {
     });
     getAllPcs((allPcs) => {
       setPcList(allPcs);
+      console.log(allPcs);
     });
   }, [navigate]);
 

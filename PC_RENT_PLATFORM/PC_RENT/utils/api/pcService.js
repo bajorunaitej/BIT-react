@@ -1,7 +1,7 @@
 export async function savePc(pc, cb) {
   //POST /server/api/pc/
 
-  const promise = await fetch("/server/api/pc/", {
+  const promise = await fetch("/server/api/pc", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
