@@ -90,6 +90,8 @@ module.exports = class Pc {
     );
   }
 
+  static async findByOwnerId(id) {}
+
   static async findById(id) {
     const results = await executeQuery(`SELECT * FROM pc WHERE id=?`, [id]);
     const pc = results[0][0];

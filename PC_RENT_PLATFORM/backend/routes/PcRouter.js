@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const PcModel = require("../model/PcModel");
+const upload = require("../utils/multerConfig");
 
 // /server/api/pc/
-
 // router.get("/", (req, res) => {
 //   res.send("Veikia pc routeris");
 // });
@@ -11,7 +11,7 @@ const PcModel = require("../model/PcModel");
 //   res.send("Veikia kazkoks pc routeris");
 // });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.array("files", 2), async (req, res) => {
   try {
     const { cpu, gpu, ramType, ramSpeed, ramAmount, pc_type, pc_name } =
       req.body;
@@ -91,6 +91,13 @@ router.put("/:id", async (req, res) => {
 
   await pcObj.update();
   res.send(pcObj.getInstance());
+});
+
+router.get("/my-pcs", async (req, res) => {
+  //prisijungusio vartotojo kompiuteriai grazinami
+  // 1. patikrinti ar vartotojas prisijunges
+  // 2. gauti prisijungusio vartotojo ID
+  // 3. Su modeliu PcModel gauti visus kompiuterius pagal vartotojo ID  |  SELECT * from pcs WHERE owner_id = userId
 });
 
 module.exports = router;
