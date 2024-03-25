@@ -31,6 +31,10 @@ const router = createBrowserRouter([
     element: <PcPage />,
   },
   {
+    path: "/my-computers",
+    element: <div>My computers list</div>,
+  },
+  {
     path: "*",
     element: <NotFound />,
   },

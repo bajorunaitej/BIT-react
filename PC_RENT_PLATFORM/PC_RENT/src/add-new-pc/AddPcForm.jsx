@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react";
 import { savePc } from "../../utils/api/pcService";
 import { useNavigate } from "react-router-dom";
+import { checkSession } from "/utils/api/sessions";
 
 export default function AddPcForm() {
   // 1. Budas susisrinkti informacija iš ivesties laukeliu
+
+  // const [files, setFiles] = useState(0);
   const navigate = useNavigate();
 
   const pcNameInputRef = useRef(null);
@@ -13,8 +16,12 @@ export default function AddPcForm() {
   const ramSpeedInputRef = useRef(null);
   const ramAmountInputRef = useRef(null);
   const computerTypeInputRef = useRef(null);
+  const pcImagesInputRef = useRef(null);
 
   useEffect(() => {
+    checkSession((resp) => {
+      if (!resp.isLoggedIn) navigate("/login");
+    });
     pcNameInputRef.current.focus();
 
     const focusCPU = (e) => {
@@ -75,23 +82,23 @@ export default function AddPcForm() {
   function registerNewPc(e) {
     e.preventDefault();
     // console.log(e.pageX === 0); //buvo paspaustas enter mygtukas
-
     //Prevencija nuo netikėto formos išsiuntimo
     if (e.pageX === 0 && e.pageY === 0) return;
     console.log("info išsiunčiama į serverį");
     // 1. Budas susisrinkti informacija iš ivesties laukeliu
-    const newPcObject = {
-      pc_name: pcNameInputRef.current.value,
-      cpu: cpuInputRef.current.value,
-      gpu: gpuInputRef.current.value,
-      ramType: ramAmountInputRef.current.value,
-      ramSpeed: ramSpeedInputRef.current.value,
-      ramAmount: ramAmountInputRef.current.value,
-      pc_type: computerTypeInputRef.current.value,
-    };
 
-    console.log(newPcObject);
-    savePc(newPcObject, (resp) => {
+    const formData = new FormData();
+    formData.append("pc_name", pcNameInputRef.current.value);
+    formData.append("cpu", cpuInputRef.current.value);
+    formData.append("gpu", gpuInputRef.current.value);
+    formData.append("ramType", ramAmountInputRef.current.value);
+    formData.append("ramSpeed", ramSpeedInputRef.current.value);
+    formData.append("ramAmount", ramAmountInputRef.current.value);
+    formData.append("pc_type", computerTypeInputRef.current.value);
+    formData.append("files", pcImagesInputRef.current.files);
+
+    console.log(formData.get("files"));
+    savePc(formData, (resp) => {
       if (resp.status) navigate("/");
       else alert("Pridėjimas prie DB buvo nesėkmingas");
     });
@@ -220,6 +227,26 @@ export default function AddPcForm() {
                 <option>Laptop</option>
                 <option>Stationary</option>
               </select>
+            </label>
+          </div>
+          <div className="mb-2">
+            <label>
+              <span className="w-1/5 inline-block select-none select-none">
+                Computer image
+              </span>
+              <input
+                type="file"
+                accept=".jpg, .png"
+                ref={pcImagesInputRef}
+                multiple
+                onChange={(e) => {
+                  if (e.target.files.length > 2) {
+                    alert("Max files chosen: 2");
+                    // e.target.files = new FileList();
+                    e.target.files.length = "";
+                  }
+                }}
+              />
             </label>
           </div>
           <button
