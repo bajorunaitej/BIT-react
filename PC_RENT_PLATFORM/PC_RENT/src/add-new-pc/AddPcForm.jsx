@@ -95,7 +95,10 @@ export default function AddPcForm() {
     formData.append("ramSpeed", ramSpeedInputRef.current.value);
     formData.append("ramAmount", ramAmountInputRef.current.value);
     formData.append("pc_type", computerTypeInputRef.current.value);
-    formData.append("files", pcImagesInputRef.current.files);
+    const files = pcImagesInputRef.current.files;
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
 
     console.log(formData.get("files"));
     savePc(formData, (resp) => {

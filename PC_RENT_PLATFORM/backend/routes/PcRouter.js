@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const PcModel = require("../model/PcModel");
 const upload = require("../utils/multerConfig");
+const PcImageModel = require("../model/PcImageModel");
 
 // /server/api/pc/
 // router.get("/", (req, res) => {
@@ -15,6 +16,8 @@ router.post("/", upload.array("files", 2), async (req, res) => {
   try {
     const { cpu, gpu, ramType, ramSpeed, ramAmount, pc_type, pc_name } =
       req.body;
+
+    console.log(req.files);
     // res.status(200).json({ message: "info priimta" });
     const newPc = new PcModel({
       ownerId: req.session.user.id,
@@ -28,13 +31,22 @@ router.post("/", upload.array("files", 2), async (req, res) => {
     });
     await newPc.save();
 
+    const allPcImageModels = req.files.map(
+      (file) => new PcImageModel({ uri: file.path, pcId: newPc.id })
+    );
+    const allPcImageSavePromises = allPcImageModels.map((model) =>
+      model.save()
+    );
+    await Promise.all(allPcImageSavePromises);
+
     res.send(201).json({
-      message: "Info sėkmingai išsiųsta",
+      message: "Info sėkmingai išsiųsta į DB",
       newPc: newPc.getInstance(),
+      pcImages: allPcImageModels.map((model) => model.getInstance()),
       status: true,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     if (err.errno === 1062) {
       res.status(400).json({
         message: "Įterpimas negalimas, toks įrašas jau yra.",
@@ -49,18 +61,33 @@ router.post("/", upload.array("files", 2), async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const pc = await PcModel.findById(req.params.id);
-    if (!pc) {
-      return res.status(404).json({ message: "PC not found", status: false });
-    } else return res.status(200).json({ pc: pc.getInstance(), status: true });
+    if (!pc) return res.status(404).json({ message: "PC not found", status: false });
+    const pcImages = await PcImageModel.getByPcId(pc.id);
+    ////---------------------------------------------fix it ↓
+    else return res
+        .status(200)
+        .json({
+          pc: pc.getInstance(),
+          pcImages: pcImages.map((pcImage) => pcImage.getInstance()),
+          status: true,
+        });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(400).json({ message: "Bad Id", status: false });
   }
 });
 
 router.get("/", async (req, res) => {
-  const allPcs = await PcModel.findAll();
-  res.status(200).json(allPcs.map((pcObj) => pcObj.getInstance()));
+  const allPcsWithoutImages = await PcModel.findAll();
+  const allPcsWithImages = await Promise.all(
+    allPcsWithoutImages.map(async (pcModel) => {
+      const pcImages = await PcImageModel.getByPcId(pcModel.id);
+      return { ...pcModel.getInstance(), images: pcImages };
+    })
+  );
+
+  console.log(allPcsWithImages);
+  res.status(200).json(allPcsWithImages);
 });
 
 router.delete("/:id", async (req, res) => {

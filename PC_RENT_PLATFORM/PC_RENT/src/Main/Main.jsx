@@ -2,9 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkSession, logout } from "/utils/api/sessions";
 import { getAllPcs } from "../../utils/api/pcService";
-import stationaryImage from "/src/assets/pc-images/stationary.jpg";
-import macbookImage from "/src/assets/pc-images/macbook.jpg";
-import laptopImage from "/src/assets/pc-images/laptop.jpg";
+// import stationaryImage from "/src/assets/pc-images/stationary.jpg";
+// import macbookImage from "/src/assets/pc-images/macbook.jpg";
+// import laptopImage from "/src/assets/pc-images/laptop.jpg";
 
 function AuthButtons() {
   return (
@@ -26,27 +26,31 @@ function AuthButtons() {
 }
 
 function PcPost({ pc }) {
-  function choosePcImage(pcType) {
+  function choosePcImage(pc) {
+    const pcImagesArr = pc.images;
+    if (pcImagesArr.length !== 0) return `/server/api/${pcImagesArr[0].uri}`;
+    else return "https://placehold.co/400x300";
+
     // if(pcType === "Stationary") {
     //   return stationaryImage;
     // }
-    switch (pcType) {
-      case "Stationary":
-        return stationaryImage;
-      case "Laptop":
-        return laptopImage;
-      case "Macbook":
-        return macbookImage;
-      default:
-        return "https://placehold.co/400x300";
-    }
+    // switch (pcType) {
+    //   case "Stationary":
+    //     return stationaryImage;
+    //   case "Laptop":
+    //     return laptopImage;
+    //   case "Macbook":
+    //     return macbookImage;
+    //   default:
+    //     return "https://placehold.co/400x300";
+    // }
   }
 
   return (
     <div className="flex justify-center items-center">
       <div className="bg-white min-h-[300px] min-w-[100px] max-[250px]">
         <div className="img">
-          <img src={choosePcImage(pc.pc_type)} className="w-full" />
+          <img src={choosePcImage(pc)} className="w-full" />
         </div>
         <div className="details p-4 w-fit mx-auto">
           <a href={`/pc/${pc.id}`}>

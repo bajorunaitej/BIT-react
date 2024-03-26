@@ -9,5 +9,14 @@ export default function MyComputers() {
       if (!resp.isLoggedIn) navigate("/login");
     });
   }, [navigate]);
-  return <div>sdfsdfsdfsdfd</div>;
+  return (
+    <div className="">
+      <div className="">
+        <button>Rikiuoti A-Z</button>
+        <button>Rikiuoti Z-A</button>
+        <button>Filtruoti pagal procesorių</button>
+        <button>Filtruoti pagal vaizdo plokštę</button>
+      </div>
+    </div>
+  );
 }
