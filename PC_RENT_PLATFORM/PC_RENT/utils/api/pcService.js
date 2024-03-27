@@ -1,26 +1,28 @@
-export async function savePc(pc, cb) {
-  //POST /server/api/pc/
-
+export async function savePc(pc, callback) {
+  //POST
   const promise = await fetch("/server/api/pc", {
     method: "post",
-    // headers: {
-    //   "Content-Type": "multipart/form-data",
-    // },
-    // body: JSON.stringify(pc),
     body: pc,
   });
-  const result = await promise.json();
-  cb(result);
-}
 
-export async function getAllPcs(cb) {
+  const response = await promise.json();
+  callback(response);
+}
+export async function getAllPcs(callback) {
   const promise = await fetch("/server/api/pc");
-  const result = await promise.json();
-  cb(result);
+  const response = await promise.json();
+  callback(response);
 }
 
-export async function getById(id, cb) {
+export async function getById(id, callback) {
   const promise = await fetch(`/server/api/pc/${id}`);
   const response = await promise.json();
-  cb(response);
+  console.log(response);
+  callback(response);
+}
+
+export async function getMyPcs(callback) {
+  const promise = await fetch("/server/api/pc/my-pcs");
+  const response = await promise.json();
+  callback(response);
 }

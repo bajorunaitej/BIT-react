@@ -12,21 +12,7 @@ export default function PcPage() {
     getById(id, (resp) => {
       setIsPcFound(resp.status);
       setPcDetails(resp.pc);
-      console.log(resp);
-      setPcImages(
-        resp.pcImages.map((pcImage) => `/server/api/${[pcImage.uri]}`)
-      );
-
-      // {
-      // 	"ownerId": "17",
-      // 	"cpu": "Intel Core i5",
-      // 	"gpu": "Intel Iris Xe Graphics",
-      // 	"ramType": "DDR4",
-      // 	"ramSpeed": "2000",
-      // 	"ramAmount": "8",
-      // 	"pc_type": "Laptop",
-      //	"pc_name": "Acer"
-      // }
+      setPcImages(resp.pcImages);
     });
   }, []);
 
@@ -63,8 +49,6 @@ export default function PcPage() {
             <div className="col-span-3">{pcDetails.ramSpeed}</div>
             <div className="font-bold">RAM amount (GB)</div>
             <div className="col-span-3">{pcDetails.ramAmount}</div>
-            <div className="font-bold">Processor (CPU)</div>
-            <div className="col-span-3">I7-13700kf</div>
           </div>
         </div>
       </div>
